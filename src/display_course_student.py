@@ -7,7 +7,6 @@ from PyQt6.QtWidgets import (QApplication, QLabel, QLineEdit, QMessageBox,
                              QPushButton, QTextEdit, QWidget)
 
 from custom_widgets import ClickableLabel
-from display_workout import DisplayWorkout
 
 bg_color = '#28293D'
 heading2_color = '#7F98BC'
@@ -40,14 +39,19 @@ class DisplayCourseStudent(QWidget):
       self.course = {
         "course_id": 1,
         "name": "Contoh course",
-        "deskripsi": "Ini adalah contoh dari course di Udemy",
+        "description": "Ini adalah contoh dari course di Udemy",
         "cost": 10,
         "owner_id": 1
       }
-    self.fetchCourse()
+    self.final_project = {
+      "final_project_id": 1,
+      "course_id": 1,
+      "name": "Ini adalah final project",
+      "question": "Ini adalah soal final project"
+    }
+    # self.fetchCourse()
     self.fetchFinalProject()
     self.setUpDashboardWindow()
-    self.displayWorkout = DisplayWorkout()
     
   def setUpDashboardWindow(self):
     self.setFixedSize(1280, 720)
@@ -81,6 +85,7 @@ class DisplayCourseStudent(QWidget):
     inter48.setFamily("Inter")
     inter48.setPixelSize(48)
     inter48.setBold(True)
+    
     # Set up background image
     self.setStyleSheet(f"background-color: {bg_color}")
     self.helloLabel = QLabel(self)
@@ -90,16 +95,18 @@ class DisplayCourseStudent(QWidget):
     self.helloLabel.setFixedSize(585, 29)
     self.helloLabel.setAlignment(Qt.AlignmentFlag.AlignRight)
     self.helloLabel.setFont(inter24)
+    
     # Set up heading label
-    heading = QLabel(self)
-    heading.setText(self.course["name"])
-    heading.move(60, 40)
-    heading.setStyleSheet(f"color: {atlantic}; background-color: {bg_color}")
-    heading.setFont(inter48)
+    self.heading = QLabel(self)
+    self.heading.setText(self.course["name"])
+    self.heading.move(60, 40)
+    self.heading.setStyleSheet(f"color: {atlantic}; background-color: {bg_color}")
+    self.heading.setFont(inter48)
+    
     # Set up log out button
-    logOutBtn = QPushButton(self)
-    logOutBtn.setText("Back")
-    logOutBtn.setStyleSheet(f'''
+    self.logOutBtn = QPushButton(self)
+    self.logOutBtn.setText("Back")
+    self.logOutBtn.setStyleSheet(f'''
       QPushButton {{
         color: #ffffff;
         background-color: {btn_color};
@@ -110,11 +117,11 @@ class DisplayCourseStudent(QWidget):
         background-color: {btn_color_hover};
       }}
     ''')
-    logOutBtn.setFixedSize(121, 48)
-    logOutBtn.setFont(inter16)
-    logOutBtn.move(1099, 88)
-    logOutBtn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-    logOutBtn.clicked.connect(self.logOut)
+    self.logOutBtn.setFixedSize(121, 48)
+    self.logOutBtn.setFont(inter16)
+    self.logOutBtn.move(1099, 88)
+    self.logOutBtn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+    self.logOutBtn.clicked.connect(self.logOut)
 
     # Input spec
     self.specification_heading = QLabel(self)
@@ -230,9 +237,24 @@ class DisplayCourseStudent(QWidget):
 
   def updateCourse(self, course):
     self.course = course
+    self.heading.setText(self.course["name"])
+    self.isi_deskripsi.setText(self.course["description"])
+    self.updateFinalProject()
 
+  def updateFinalProject(self):
+    c = self.connFinalProject.cursor()
+    c.execute("""
+              SELECT * FROM final_project where final_project_id = ?
+    """, [self.course["course_id"]])
+    res = c.fetchone()
+    self.final_project["id"] = res[0]
+    self.final_project["name"] = res[1]
+    self.final_project["course_id"] = res[2]
+    self.final_project["question"] = res[3]    
+    self.question.setText(self.final_project["question"])
+        
   def logOut(self):
-    self.switch.emit("display_workout", self.user)
+    self.switch.emit("user_course", self.user)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

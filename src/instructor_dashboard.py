@@ -32,24 +32,41 @@ BTN_COLOR_HOVER = 'qlineargradient(x1:0, y1:0, x2:1, y2: 1, stop:0 #6b75ff, stop
 class InstructorDashboard(QWidget):
   switch = pyqtSignal(str, dict)
 
-  def __init__(self, user = None):
+  def __init__(self, instructor = None, course = None):
     super().__init__()
-    self.conn = sqlite3.connect("fitpal.db")
-    if (user != None):
-      self.user = user
+    self.connCourse = sqlite3.connect("course.db")
+    self.connFinalProject = sqlite3.connect("final_project.db")
+    self.connFinalProjectAnswer = sqlite3.connect("final_project_answer.db")
+    if (instructor != None):
+      self.instructor = instructor
     else:
-      self.user = {
+      self.instructor = {
         "name": "John Doe",
         "username": "johndoe",
         "email": "johndoe@gmail.com",
         "password": "johndoe",
-        "type": "user"
       }
+      if (course != None):
+          self.course = course
+      else:
+        self.course = {
+          "course_id": 1,
+          "name": "Contoh course",
+          "description": "Ini adalah contoh dari course di Udemy",
+          "cost": 10,
+          "owner_id": 1
+      }
+    self.final_project = {
+      "final_project_id": 1,
+      "course_id": 1,
+      "name": "Ini adalah final project",
+      "question": "Ini adalah soal final project"
+    }
     self.setUpDashboardWindow()
 
   def setUpDashboardWindow(self):
     self.setFixedSize(1280, 720)
-    self.setWindowTitle("FitPal - Add Workout")
+    self.setWindowTitle("Udemy - Edit Final Project")
     self.setUpWidgets()
   
   def setUpWidgets(self):
@@ -89,7 +106,7 @@ class InstructorDashboard(QWidget):
     # logo.setStyleSheet(f"background-color: {bg_color}")
     # Set up hello label
     self.helloLabel = QLabel(self)
-    self.helloLabel.setText(f"Hello, {self.user['name']}!")
+    self.helloLabel.setText(f"Hello, {self.instructor['name']}!")
     self.helloLabel.move(635, 44)
     self.helloLabel.setStyleSheet(f'color: rgba(255, 255, 255, 0.8); background-color: {bg_color}')
     self.helloLabel.setFixedSize(585, 29)
@@ -97,7 +114,7 @@ class InstructorDashboard(QWidget):
     self.helloLabel.setFont(inter24)
     # Set up heading label
     heading = QLabel(self)
-    heading.setText("Add Final Course")
+    heading.setText("Edit Course")
     heading.move(60, 40)
     heading.setStyleSheet(f"color: {atlantic}; background-color: {bg_color}")
     heading.setFont(inter48)
@@ -123,7 +140,7 @@ class InstructorDashboard(QWidget):
     ''')
     backBtn.setFixedSize(121, 48)
     backBtn.setFont(inter16)
-    backBtn.move(1099, 88)
+    backBtn.move(60, 615)
     backBtn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
     backBtn.clicked.connect(self.back)
     
@@ -133,6 +150,7 @@ class InstructorDashboard(QWidget):
     title.move(60,140)
     title.setStyleSheet(f"color: {white}; background-color: {bg_color}")
     title.setFont(inter18)
+    
     self.title = QLabel(self)
     self.title.setText("PyQT6")
     self.title.setFixedSize(540, 45)
@@ -260,45 +278,26 @@ class InstructorDashboard(QWidget):
     # self.illustration.setFont(inter16)
     self.initializeAnswerCards()
 
+  def fetchFinalProject(self):
+    c = self.connFinalProject.cursor()
+    c.execute("SELECT * FROM final_project where final_project_id = 1")
+    final_project = c.fetchone()
+    c.close()
 
-    self.goBack = QPushButton(self)
-    self.goBack.setText("Back")
-    self.goBack.setFixedSize(180, 45)
-    self.goBack.move(60, 615)
-    self.goBack.setStyleSheet(f'''
-      QPushButton {{
-        color: #ffffff;
-        background-color: #F10628;
-        border: none;
-        border-radius: 12px;
-      }}
-      QPushButton:hover {{
-        background-color: #f43853;
-      }}
-    ''')
-    self.goBack.setFont(inter16)
-    self.goBack.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-    self.goBack.clicked.connect(self.backToDisplayWorkout)
+    dataFinalProject = {"final_project_id" : final_project[0], "name" : final_project[1], "course_id" : final_project[2], "question" : final_project[3]}
 
-    self.Add = QPushButton(self)
-    self.Add.setText("Add")
-    self.Add.setFixedSize(180, 45)
-    self.Add.move(270, 615)
-    self.Add.setStyleSheet('''
-      QPushButton {
-        color: #ffffff;
-        background-color: qlineargradient(x1:0, y1:0, x2:1, y2: 1, stop:0 #5561ff, stop:1 #3643fc);
-        border: none;
-        border-radius: 12px;
-      }
-      QPushButton:hover {
-        background-color: qlineargradient(x1:0, y1:0, x2:1, y2: 1, stop:0 #6b75ff, stop:1 #535fff);
-      }
-    ''')
-    self.Add.setFont(inter16)
-    self.Add.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-    self.Add.clicked.connect(self.addWorkout)
+    self.final_project = dataFinalProject
 
+  def fetchCourse(self):
+    c = self.connCourse.cursor()
+    c.execute("SELECT * FROM course where course_id = 1")
+    course = c.fetchone()
+    c.close()
+    
+    dataCourse = {"course_id" : course[0], "name" : course[1], "description" : course[2], "cost" : course[3], "owner_id" : course[4]}
+
+    self.course = dataCourse
+    
   def initializeAnswerCards(self):
       # Set up font
       inter10 = QFont()
@@ -420,53 +419,17 @@ class InstructorDashboard(QWidget):
       else:
           self.rightWorkoutButton.hide()
 
-  def addWorkout(self):
-    if (self.title.text() == '' or self.specification.text() == '' or self.desc.toPlainText() == '' or self.illustration.text() == '' or self.Tutorial.text() == ''):
-      msgBox = QMessageBox()
-      msgBox.setText("<p>Please fill out the form properly!</p>")
-      msgBox.setWindowTitle("Add New Workout Failed")
-      msgBox.setIcon(QMessageBox.Icon.Warning)
-      msgBox.setStyleSheet("background-color: white")
-      msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
-      msgBox.exec()
-      return
-    c = self.conn.cursor()
-    c.execute(f"SELECT * FROM list_olahraga WHERE name = '{self.title.text()}' AND specification = '{self.specification.text()}' AND forUser = 'null'")
-    if (c.fetchone() != None):
-      msgBox = QMessageBox()
-      msgBox.setText("<p>Workout already exists!</p>")
-      msgBox.setWindowTitle("Add New Workout Failed")
-      msgBox.setIcon(QMessageBox.Icon.Warning)
-      msgBox.setStyleSheet("background-color: white")
-      msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
-      msgBox.exec()
-      return
-    c.execute(f"INSERT INTO list_olahraga (name, description, specification, linkIllustration, linkTutorial, forUser) VALUES ('{self.title.text()}', '{self.desc.toPlainText()}', '{self.specification.text()}', '{self.illustration.text()}', '{self.Tutorial.text()}', NULL)")
-    self.conn.commit()
-  # Tunjukkan registrasi berhasil
-    msgBox = QMessageBox()
-    msgBox.setText(f"<p>Workout has been added successfully!</p>")
-    msgBox.setWindowTitle("Add New Workout Successful")
-    msgBox.setIcon(QMessageBox.Icon.Information)
-    msgBox.setStyleSheet("background-color: white")
-    msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
-    msgBox.exec()
-  # Clear form inputs
-    self.title.clear()
-    self.specification.clear()
-    self.desc.clear()
-    self.illustration.clear()
-    self.Tutorial.clear()
-        
-  def backToDisplayWorkout(self):
-    self.switch.emit("display_workout", self.user)
-
-  def updateUser(self, user):
-    self.user = user
-    self.helloLabel.setText(f"Hello, {self.user['name']}!")
+  def updateCourse(self, course):
+    self.course = course
+    self.title.setText(self.course["name"])
+    self.specification.setText(self.course["description"])
+    
+  def updateUser(self, instructor):
+    self.instructor = instructor
+    self.helloLabel.setText(f"Hello, {self.instructor['name']}!")
 
   def back(self):
-    self.switch.emit("login", {})
+    self.switch.emit("instructor_course", self.instructor)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

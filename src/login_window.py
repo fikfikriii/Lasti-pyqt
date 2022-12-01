@@ -58,9 +58,9 @@ class LoginWindow(QWidget):
 
         # Label untuk teks di bawah logo
         logoText = QLabel(self)
-        logoText.setText("Udemy")
-        logoText.setStyleSheet('color: #68FCD6')
-        logoText.move(610, 143)
+        logoText.setText("Welcome to Udemy")
+        logoText.setStyleSheet(f'color: {PRIMARY_WHITE}')
+        logoText.move(570, 143)
         logoText.setFont(inter16)
 
         # Label untuk card
@@ -112,7 +112,7 @@ class LoginWindow(QWidget):
         self.loginButton = QPushButton(self)
         self.loginButton.setText("Log in")
         self.loginButton.setFixedSize(183, 48)
-        self.loginButton.move(548, 430)
+        self.loginButton.move(545, 430)
         self.loginButton.setStyleSheet('''
         QPushButton {
           color: #ffffff;
@@ -180,7 +180,6 @@ class LoginWindow(QWidget):
         return bcrypt.checkpw(password.encode(), hashPassword.encode())
 
     def login(self):
-        flag = False
         cuser = self.connectUser.cursor()
         cuser.execute(
             f"SELECT * FROM user WHERE (username = '{self.usernameEdit.text()}' OR email = '{self.usernameEdit.text()}')")
@@ -213,7 +212,7 @@ class LoginWindow(QWidget):
                     "password": resuser[4],
                     "enrolled_course": resuser[5]
                 }
-                self.switch.emit("display_workout", user)
+                self.switch.emit("user_course", user)
         else:    
             cinstructor = self.connectInstructor.cursor()
             cinstructor.execute(
@@ -245,7 +244,7 @@ class LoginWindow(QWidget):
                     "email": resinstructor[3],
                     "password": resinstructor[4],
                 }
-                self.switch.emit("dashboard_instructor", instructor)
+                self.switch.emit("instructor_course", instructor)
 
     def clearForm(self):
         self.passwordEdit.clear()

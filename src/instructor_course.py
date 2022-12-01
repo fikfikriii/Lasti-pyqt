@@ -21,20 +21,19 @@ LIGHT_YELLOW = '#FFD9A0'
 BTN_COLOR = 'qlineargradient(x1:0, y1:0, x2:1, y2: 1, stop:0 #5561ff, stop:1 #3643fc);'
 BTN_COLOR_HOVER = 'qlineargradient(x1:0, y1:0, x2:1, y2: 1, stop:0 #6b75ff, stop:1 #535fff)'
 
-class DisplayWorkout(QWidget):
+class InstructorCourse(QWidget):
     switch = pyqtSignal(str, dict, dict)
 
-    def __init__(self, user = None):
+    def __init__(self, instructor = None):
         super().__init__()
-        if user is not None:
-            self.user = user
+        if instructor is not None:
+            self.instructor = instructor
         else:
-            self.user = {
+            self.instructor = {
                 "name": "John Doe",
                 "username": "johndoe",
                 "email": "johndoe@gmail.com",
                 "password": "johndoe",
-                "type": "user"
             }
         self.conn = sqlite3.connect('course.db')
         self.pageCourses = 0
@@ -50,7 +49,7 @@ class DisplayWorkout(QWidget):
 
     def setUpDisplayCoursesWindow(self):
         self.setFixedSize(1280, 720)
-        self.setWindowTitle("Udemy - Display Courses")
+        self.setWindowTitle("Udemy - Instructor Courses")
         self.setUpWidgets()
 
     def setUpWidgets(self):
@@ -75,7 +74,7 @@ class DisplayWorkout(QWidget):
 
         # Set up hello label
         self.helloLabel = QLabel(self)
-        self.helloLabel.setText(f"Hello, {self.user['name']}!")
+        self.helloLabel.setText(f"Hello, {self.instructor['name']}!")
         self.helloLabel.move(635, 44)
         self.helloLabel.setStyleSheet("color: rgba(255, 255, 255, 0.8); background-color: {BG_COLOR}")
         self.helloLabel.setFixedSize(585, 29)
@@ -188,13 +187,12 @@ class DisplayWorkout(QWidget):
             self.coursesCards[i]["cardDescription"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: {LIGHT_YELLOW}")
             self.coursesCards[i]["cardDescription"].setFont(inter16)
 
-            self.coursesCards[i]["openCourseButton"] = QPushButton(self)
-            self.coursesCards[i]["openCourseButton"].setGeometry(QRect((172) + (i*340), 503, 90, 30))
-            self.coursesCards[i]["openCourseButton"].setText("Open Course")
-            self.coursesCards[i]["openCourseButton"].setStyleSheet("color: #6E7198; background: transparent; border: 2px solid; border-color: #6E7198; border-radius: 12px;")
-            self.coursesCards[i]["openCourseButton"].clicked.connect(lambda x, i=i: self.openCourse(i))
-            self.coursesCards[i]["openCourseButton"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-
+            self.coursesCards[i]["editCourseButton"] = QPushButton(self)
+            self.coursesCards[i]["editCourseButton"].setGeometry(QRect((172) + (i*340), 503, 90, 30))
+            self.coursesCards[i]["editCourseButton"].setText("Edit Course")
+            self.coursesCards[i]["editCourseButton"].setStyleSheet("color: #6E7198; background: transparent; border: 2px solid; border-color: #6E7198; border-radius: 12px;")
+            self.coursesCards[i]["editCourseButton"].clicked.connect(lambda x, i=i: self.editCourse(i))
+            self.coursesCards[i]["editCourseButton"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
     def setUpDisplayCourses(self):
         listCoursesPlan = self.course
@@ -206,13 +204,13 @@ class DisplayWorkout(QWidget):
                 self.coursesCards[i]["card"].show()
                 self.coursesCards[i]["cardTitle"].show()
                 self.coursesCards[i]["cardDescription"].show()
-                self.coursesCards[i]["openCourseButton"].show()
+                self.coursesCards[i]["editCourseButton"].show()
             else:
                 self.coursesCards[i]["card"].hide()
                 self.coursesCards[i]["cardTitle"].hide()
                 self.coursesCards[i]["cardIllustration"].hide()
                 self.coursesCards[i]["cardDescription"].hide()
-                self.coursesCards[i]["openCourseButton"].hide()
+                self.coursesCards[i]["editCourseButton"].hide()
 
         if self.pageCourses == 0:
             self.leftCoursesButton.hide()
@@ -256,14 +254,14 @@ class DisplayWorkout(QWidget):
             })
         self.course = dataCourses
 
-    def updateUser(self, user):
-        self.user = user
-        self.helloLabel.setText(f"Hello, {self.user['name']}!")
+    def updateUser(self, instructor):
+        self.instructor = instructor
+        self.helloLabel.setText(f"Hello, {self.instructor['name']}!")
 
     def logout(self):
         self.switch.emit("login", {}, {})
     
-    def openCourse(self, i):
+    def editCourse(self, i):
         course = {
             "course_id": self.course[i]["course_id"],
             "name": self.course[i]["name"],
@@ -271,10 +269,10 @@ class DisplayWorkout(QWidget):
             "cost": self.course[i]["cost"],
             "owner_id": self.course[i]["owner_id"]
         }
-        self.switch.emit("display_course_student", self.user, course)
+        self.switch.emit("instructor_dashboard", self.instructor, course)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = DisplayWorkout()
+    window = InstructorCourse()
     window.show()
     sys.exit(app.exec())
