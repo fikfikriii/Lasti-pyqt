@@ -50,11 +50,11 @@ class Controller:
         self.loginWindow.close()
         if page == "register":
             self.registerWindow.show()
-        elif page == "user_dashboard":
+        elif page == "dashboard_user":
             self.displayWorkout.fetchWorkoutPlan(user)
             self.userDashboard.updateUser(user)
             self.userDashboard.show()
-        elif page == "trainer_dashboard":
+        elif page == "dashboard_instructor":
             self.trainerDashboard.updateUser(user)
             self.trainerDashboard.show()
 
