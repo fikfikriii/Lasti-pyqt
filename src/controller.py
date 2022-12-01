@@ -138,10 +138,10 @@ class Controller:
     def initializeDatabase(self):
         if not os.path.exists("user.db"):
             self.conn = sqlite3.connect("user.db")
-            c = self.conn.cursur()
+            c = self.conn.cursor()
             c.execute("""
                 CREATE TABLE IF NOT EXISTS user (
-                user_id integer PRIMARY KEY AUTO INCREMENT,
+                user_id integer PRIMARY KEY ,
                 name text,
                 username text,
                 email text,
@@ -152,10 +152,10 @@ class Controller:
         
         if not os.path.exists("instructor.db"):
             self.conn = sqlite3.connect("instructor.db")
-            c = self.conn.cursur()
+            c = self.conn.cursor()
             c.execute("""
                 CREATE TABLE IF NOT EXISTS instructor (
-                instructor_id integer PRIMARY KEY AUTO INCREMENT,
+                instructor_id integer PRIMARY KEY,
                 name text,
                 username text,
                 email text,
@@ -192,22 +192,26 @@ class Controller:
             """)
         
         if not os.path.exists("final_project.db"):
+            self.conn = sqlite3.connect("final_project.db")
+            c = self.conn.cursor()
             c.execute("""
             CREATE TABLE IF NOT EXISTS final_project (
-            final_project_id integer PRIMARY KEY AUTO INCREMENT,
+            final_project_id integer PRIMARY KEY ,
             name text,
             course_id integer,
-            question text,
+            question text
             )
             """)
         
         if not os.path.exists("final_project_answer.db"):
+            self.conn = sqlite3.connect("final_project_answer.db")
+            c = self.conn.cursor()
             c.execute("""
             CREATE TABLE IF NOT EXISTS final_project_answer (
             course_id integer,
             final_project_id integer,
             user_id integer
-            answer text,
+            answer text
             )
             """)
             

@@ -251,7 +251,7 @@ class DisplayWorkout(QWidget):
         else:
             # Untuk kasus display workout dalam sebuah workout plan
             listWorkout = self.listWorkoutPlan
-        print(type(listWorkout))
+
         start = self.pageWorkout*3
         for i in range(3):
             if start+i < len(listWorkout):
@@ -438,7 +438,7 @@ class DisplayWorkout(QWidget):
                 "linkTutorial": workout[5]
             })
         self.workout = dataWorkout
-        print(type(workouts))
+
     def fetchWorkoutPlan(self, user):
         c = self.conn.cursor()
         c.execute("""
