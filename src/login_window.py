@@ -231,7 +231,7 @@ class LoginWindow(QWidget):
                     msgBox.setStyleSheet("background-color: white")
                     msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
                     msgBox.exec()
-            else:
+            elif resinstructor != None:
                 msgBox = QMessageBox()
                 msgBox.setText(f"<p>Hello, {resinstructor[1]}!</p>")
                 msgBox.setWindowTitle("Login Successful")

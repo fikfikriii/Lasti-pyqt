@@ -22,8 +22,7 @@ BTN_COLOR = 'qlineargradient(x1:0, y1:0, x2:1, y2: 1, stop:0 #5561ff, stop:1 #36
 BTN_COLOR_HOVER = 'qlineargradient(x1:0, y1:0, x2:1, y2: 1, stop:0 #6b75ff, stop:1 #535fff)'
 
 class DisplayWorkout(QWidget):
-    switch = pyqtSignal(str, dict)
-    switch2 = pyqtSignal(str, dict, dict)
+    switch = pyqtSignal(str, dict, dict)
 
     def __init__(self, user = None):
         super().__init__()
@@ -83,10 +82,10 @@ class DisplayWorkout(QWidget):
         self.helloLabel.setAlignment(Qt.AlignmentFlag.AlignRight)
         self.helloLabel.setFont(inter24)
 
-        # Set up back button
-        backBtn = QPushButton(self)
-        backBtn.setText("Back")
-        backBtn.setStyleSheet(f'''
+        # Set up logout button
+        logoutBtn = QPushButton(self)
+        logoutBtn.setText("Logout")
+        logoutBtn.setStyleSheet(f'''
         QPushButton {{
             color: #ffffff;
             background-color: {BTN_COLOR};
@@ -97,11 +96,11 @@ class DisplayWorkout(QWidget):
             background-color: {BTN_COLOR_HOVER};
         }}
         ''')
-        backBtn.setFixedSize(121, 48)
-        backBtn.setFont(inter16)
-        backBtn.move(1099, 88)
-        backBtn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        backBtn.clicked.connect(self.back)
+        logoutBtn.setFixedSize(121, 48)
+        logoutBtn.setFont(inter16)
+        logoutBtn.move(1099, 88)
+        logoutBtn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        logoutBtn.clicked.connect(self.logout)
 
         self.rightCoursesButton = QPushButton(self)
         self.rightCoursesButton.setGeometry(QRect(1130, 308, 48, 48))
@@ -269,14 +268,13 @@ class DisplayWorkout(QWidget):
         self.user = user
         self.helloLabel.setText(f"Hello, {self.user['fullname']}!")
 
-    def back(self):
-        if self.listCoursesPlan is None:
-            self.switch.emit("user_dashboard", self.user)
-        else:
-            self.backWP()
+    def logout(self):
+        print("logout")
+        self.switch.emit("login", {}, {})
+        print("te")
     
     def openCourse(self, i):
-        self.switch2.emit("display_course_student", self.user, self.course[i])
+        self.switch.emit("display_course_student", self.user, self.course[i])
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

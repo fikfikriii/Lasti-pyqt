@@ -5,7 +5,6 @@ from tkinter import E
 
 from PyQt6.QtWidgets import QApplication
 
-from dashboard_trainer import TrainerDashboard
 from display_workout import DisplayWorkout
 from display_workout_trainer import DisplayWorkoutTrainer
 from login_window import LoginWindow
@@ -41,6 +40,7 @@ class Controller:
         if page == "register":
             self.registerWindow.show()
         elif page == "display_workout":
+            self.displayWorkout.updateUser(user)
             self.displayWorkout.show()
         elif page == "dashboard_instructor":
             self.trainerDashboard.updateUser(user)
@@ -60,9 +60,6 @@ class Controller:
         if page == "login":
             self.loginWindow.clearForm()
             self.loginWindow.show()
-        elif page == "trainer_dashboard":
-            self.trainerDashboard.updateUser(user)
-            self.trainerDashboard.show()
         
     def fromDisplayCourseStudent(self, page, user):
         self.displayCourseStudent.close()
