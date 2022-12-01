@@ -1,4 +1,5 @@
 import sys
+import sqlite3
 
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCursor, QFont, QPixmap
@@ -74,7 +75,7 @@ class TrainerDashboard(QWidget):
     self.helloLabel.setFont(inter24)
     # Set up heading label
     heading = QLabel(self)
-    heading.setText("What do you want to do?")
+    heading.setText("Welcome Students")
     heading.move(60, 120)
     heading.setStyleSheet(f"color: {atlantic}; background-color: {bg_color}")
     heading.setFont(inter48)
@@ -167,6 +168,12 @@ class TrainerDashboard(QWidget):
     logOutBtn.move(1099, 88)
     logOutBtn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
     logOutBtn.clicked.connect(self.logOut)
+    self.conn = sqlite3.connect("course.db")
+    c = self.conn.cursor()
+    c.execute("""
+      SELECT * FROM course
+    """)
+    print(c)
 
   def updateUser(self, user):
     self.user = user
