@@ -23,6 +23,7 @@ BTN_COLOR_HOVER = 'qlineargradient(x1:0, y1:0, x2:1, y2: 1, stop:0 #6b75ff, stop
 
 class DisplayWorkout(QWidget):
     switch = pyqtSignal(str, dict)
+    switch2 = pyqtSignal(str, dict, dict)
 
     def __init__(self, user = None):
         super().__init__()
@@ -192,7 +193,7 @@ class DisplayWorkout(QWidget):
             self.coursesCards[i]["openCourseButton"].setGeometry(QRect((172) + (i*340), 503, 90, 30))
             self.coursesCards[i]["openCourseButton"].setText("Open Course")
             self.coursesCards[i]["openCourseButton"].setStyleSheet("color: #6E7198; background: transparent; border: 2px solid; border-color: #6E7198; border-radius: 12px;")
-            self.coursesCards[i]["openCourseButton"].clicked.connect(lambda x, i=i: self.openTutorial(i))
+            self.coursesCards[i]["openCourseButton"].clicked.connect(lambda x, i=i: self.openCourse(i))
             self.coursesCards[i]["openCourseButton"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
 
@@ -273,6 +274,9 @@ class DisplayWorkout(QWidget):
             self.switch.emit("user_dashboard", self.user)
         else:
             self.backWP()
+    
+    def openCourse(self, i):
+        self.switch2.emit("display_course_student", self.user, self.course[i])
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

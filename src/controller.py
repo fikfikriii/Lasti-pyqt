@@ -5,15 +5,12 @@ from tkinter import E
 
 from PyQt6.QtWidgets import QApplication
 
-from add_history import addHistory
-from add_workout import trainer_AddWorkout
 from dashboard_trainer import TrainerDashboard
-from dashboard_user import UserDashboard
 from display_workout import DisplayWorkout
 from display_workout_trainer import DisplayWorkoutTrainer
 from login_window import LoginWindow
 from register_window import RegisterWindow
-from workout_history import WorkoutHistory
+from display_course_student import DisplayCourseStudent
 
 class Controller:
     def __init__(self):
@@ -22,20 +19,13 @@ class Controller:
         self.loginWindow.switch.connect(self.fromLogin)
         self.registerWindow = RegisterWindow()
         self.registerWindow.switch.connect(self.fromRegister)
-        self.userDashboard = UserDashboard()
-        self.userDashboard.switch.connect(self.fromUserDashboard)
-        self.trainerDashboard = TrainerDashboard()
-        self.trainerDashboard.switch.connect(self.fromTrainerDashboard)
-        self.addWorkout = trainer_AddWorkout()
-        self.addWorkout.switch.connect(self.fromAddWorkout)
         self.displayWorkout = DisplayWorkout()
         self.displayWorkout.switch.connect(self.fromDisplayWorkout)
         self.displayWorkoutTrainer = DisplayWorkoutTrainer()
         self.displayWorkoutTrainer.switch.connect(self.fromDisplayWorkoutTrainer)
-        self.workoutHistory = WorkoutHistory()
-        self.workoutHistory.switch.connect(self.fromWorkoutHistory)
-        self.addHistory = addHistory()
-        self.addHistory.switch.connect(self.fromAddHistory)
+        self.displayCourseStudent = DisplayCourseStudent()
+        self.displayCourseStudent.switch.connect(self.fromDisplayCourseStudent)
+        # self.trainerAddWorkout.connect(self.from)
         pass
 
     def start(self):
@@ -50,59 +40,20 @@ class Controller:
         self.loginWindow.close()
         if page == "register":
             self.registerWindow.show()
-        elif page == "dashboard_user":
-            self.displayWorkout.fetchWorkoutPlan(user)
-            self.userDashboard.updateUser(user)
-            self.userDashboard.show()
+        elif page == "display_workout":
+            self.displayWorkout.show()
         elif page == "dashboard_instructor":
             self.trainerDashboard.updateUser(user)
-            self.trainerDashboard.show()
+            self.trainerDashboard.show()        
 
-    def fromUserDashboard(self, page, user):
-        self.userDashboard.close()
-        if page == "login":
-            self.loginWindow.clearForm()
-            self.loginWindow.show()
-        elif page == "display_workout":
-            self.displayWorkout.updateUser(user)
-            self.displayWorkout.updateDisplayWorkout()
-            self.displayWorkout.show()
-        elif page == "finish_workout":
-            self.workoutHistory.updateUser(user)
-            self.workoutHistory.updateWorkoutHistory()
-            self.workoutHistory.show()
-
-    def fromTrainerDashboard(self, page, user):
-        self.trainerDashboard.close()
-        if page == "login":
-            self.loginWindow.clearForm()
-            self.loginWindow.show()
-        elif page == "display_workout":
-            self.displayWorkoutTrainer.updateUser(user)
-            self.displayWorkoutTrainer.updateDisplayWorkout()
-            self.displayWorkoutTrainer.show()
-        elif page == "add_workout":
-            self.addWorkout.updateUser(user)
-            self.addWorkout.show()
-
-    def fromAddWorkout(self, page, user):
-        self.addWorkout.close()
-        if page == "login":
-            self.loginWindow.clearForm()
-            self.loginWindow.show()
-        elif page == "display_workout":
-            self.displayWorkoutTrainer.updateUser(user)
-            self.displayWorkoutTrainer.updateDisplayWorkout()
-            self.displayWorkoutTrainer.show()
-
-    def fromDisplayWorkout(self, page, user):
+    def fromDisplayWorkout(self, page, user, course):
         self.displayWorkout.close()
         if page == "login":
             self.loginWindow.clearForm()
             self.loginWindow.show()
-        elif page == "user_dashboard":
-            self.userDashboard.updateUser(user)
-            self.userDashboard.show()
+        elif page == "display_course_student":
+            self.displayCourseStudent.updateCourse(course)
+            self.displayCourseStudent.show()
 
     def fromDisplayWorkoutTrainer(self, page, user):
         self.displayWorkoutTrainer.close()
@@ -112,29 +63,15 @@ class Controller:
         elif page == "trainer_dashboard":
             self.trainerDashboard.updateUser(user)
             self.trainerDashboard.show()
-        elif page == "add_workout":
-            self.addWorkout.updateUser(user)
-            self.addWorkout.show()
+        
+    def fromDisplayCourseStudent(self, page, user):
+        self.displayCourseStudent.close()
+        if page == 'display_workout':
+            self.displayWorkoutTrainer.updateUser(user)
+            self.displayWorkoutTrainer.updateDisplayWorkout()
+            self.displayWorkoutTrainer.show()
 
-    def fromWorkoutHistory(self, page, user):
-        self.workoutHistory.close()
-        if page == "user_dashboard":
-            self.userDashboard.updateUser(user)
-            self.userDashboard.show()
-        elif page == "add_history":
-            self.addHistory.updateUser(user)
-            self.addHistory.show()
-        elif page == "login":
-            self.loginWindow.clearForm()
-            self.loginWindow.show()
-
-    def fromAddHistory(self, page, user):
-        self.addHistory.close()
-        if page == "workout_history":
-            self.workoutHistory.updateUser(user)
-            self.workoutHistory.updateWorkoutHistory()
-            self.workoutHistory.show()
-
+    
     def initializeDatabase(self):
         if not os.path.exists("user.db"):
             self.conn = sqlite3.connect("user.db")

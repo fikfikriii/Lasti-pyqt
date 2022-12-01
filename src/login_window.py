@@ -214,7 +214,7 @@ class LoginWindow(QWidget):
                     "password": resuser[4],
                     "enrolled_course": resuser[5]
                 }
-                self.switch.emit("dashboard_user", user)
+                self.switch.emit("display_workout", user)
         else:    
             cinstructor = self.connectInstructor.cursor()
             cinstructor.execute(

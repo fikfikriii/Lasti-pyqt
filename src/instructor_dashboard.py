@@ -1,5 +1,6 @@
 import sqlite3
 import sys
+import requests
 
 from PyQt6.QtCore import QRect, Qt, pyqtSignal
 from PyQt6.QtGui import QCursor, QFont, QPixmap
@@ -28,7 +29,7 @@ BTN_COLOR = 'qlineargradient(x1:0, y1:0, x2:1, y2: 1, stop:0 #5561ff, stop:1 #36
 BTN_COLOR_HOVER = 'qlineargradient(x1:0, y1:0, x2:1, y2: 1, stop:0 #6b75ff, stop:1 #535fff)'
 
 
-class trainer_AddWorkout(QWidget):
+class InstructorDashboard(QWidget):
   switch = pyqtSignal(str, dict)
 
   def __init__(self, user = None):
@@ -469,6 +470,6 @@ class trainer_AddWorkout(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = trainer_AddWorkout()
+    window = InstructorDashboard()
     window.show()
     sys.exit(app.exec())
