@@ -21,12 +21,14 @@ class DisplayCourseStudent(QWidget):
 
   def __init__(self, user = None, course = None):
     super().__init__()
-    self.conn = sqlite3.connect("course.db")
-    self.conn2 = sqlite3.connect("final_project.db")
+    self.connCourse = sqlite3.connect("course.db")
+    self.connFinalProject = sqlite3.connect("final_project.db")
+    self.connFinalProjectAnswer = sqlite3.connect("final_project_answer.db")
     if (user != None):
       self.user = user
     else:
       self.user = {
+        "user_id" : 1,
         "name": "John Doe",
         "username": "johndoe",
         "email": "johndoe@gmail.com",
@@ -49,7 +51,7 @@ class DisplayCourseStudent(QWidget):
     
   def setUpDashboardWindow(self):
     self.setFixedSize(1280, 720)
-    self.setWindowTitle("FitPal - Add Workout")
+    self.setWindowTitle("Udemy " + self.course['name'])
     self.setUpWidgets()
   
   def setUpWidgets(self):
@@ -115,98 +117,58 @@ class DisplayCourseStudent(QWidget):
     logOutBtn.clicked.connect(self.logOut)
 
     # Input spec
-    specification = QLabel(self)
-    specification.setText("Description")
-    specification.move(60,120)
-    specification.setStyleSheet(f"color: {white}; background-color: {bg_color}")
-    specification.setFont(inter18)
+    self.specification_heading = QLabel(self)
+    self.specification_heading.setText("Description")
+    self.specification_heading.move(60,120)
+    self.specification_heading.setStyleSheet(f"color: {white}; background-color: {bg_color}")
+    self.specification_heading.setFont(inter18)
 
     self.isi_deskripsi = QLabel(self)
     self.isi_deskripsi.setText(self.course["description"])
     self.isi_deskripsi.setStyleSheet(f"color: {white}; background-color: {bg_color}")
     self.isi_deskripsi.move(60,150)
-    self.isi_deskripsi.setFixedWidth(300)
+    self.isi_deskripsi.setFixedWidth(500)
     self.isi_deskripsi.setFont(inter16)
+    self.isi_deskripsi.setWordWrap(True)
 
-
-    # self.specification.setFont(inter16)
-    # self.specification = QLineEdit(self)
-    # self.specification.setPlaceholderText("Describe your course here!")
-    # self.specification.setFixedSize(540, 45)
-    # self.specification.move(60, 150)
-    # self.specification.setStyleSheet('''
-    #   padding: 11px 30px 11px 30px;
-    #   border: 1px solid rgba(255, 255, 255, 0.8);
-    #   border-radius: 20px;
-    #   color: rgba(255, 255, 255, 0.8);
-    #   background-color: #3E405B
-    # ''')
-    # self.specification.setFont(inter16)
-
-    self.desc = QLabel(self)
-    self.desc.setText("Final Exam (Case)")
-    self.desc.move(60,330)
-    self.desc.setStyleSheet(f"color: {white}; background-color: {bg_color}")
-    self.desc.setFont(inter18)
-
-
-
+    self.question_heading = QLabel(self)
+    self.question_heading.setText("Final Exam (Case)")
+    self.question_heading.move(60,300)
+    self.question_heading.setStyleSheet(f"color: {white}; background-color: {bg_color}")
+    self.question_heading.setFont(inter18)
+    
     self.question = QLabel(self)
     self.question.setText(self.final_project["question"])
-    self.question.setFixedSize(540, 200)
-    self.question.move(60, 360)
+    self.question.setFixedWidth(500)
+    self.question.move(60, 330)
     self.question.setStyleSheet('''
+      color: rgba(255, 255, 255, 0.8);
+    ''')
+    self.question.setWordWrap(True)
+    self.question.setFont(inter16)
+
+    self.answer_heading = QLabel(self)
+    self.answer_heading.setText("Answer Final Project Here")
+    self.answer_heading.move(660,300)
+    self.answer_heading.setStyleSheet(f"color: {white}; background-color: {bg_color}")
+    self.answer_heading.setFont(inter18)
+    self.answer = QTextEdit(self)
+    self.answer.setFixedSize(540, 250)
+    self.answer.move(660, 330)
+    self.answer.setStyleSheet('''
       padding: 11px 30px 11px 30px;
       border: 1px solid rgba(255, 255, 255, 0.8);
       border-radius: 20px;
       color: rgba(255, 255, 255, 0.8);
       background-color: #3E405B
     ''')
-    self.question.setWordWrap(True)
-    self.question.setFont(inter18)
+    self.answer.setFont(inter16)
 
-    # illustration = QLabel(self)
-    # illustration.setText("Illustration Link")
-    # illustration.move(660,450)
-    # illustration.setStyleSheet(f"color: {white}; background-color: {bg_color}")
-    # illustration.setFont(inter18)
-    # self.illustration = QLineEdit(self)
-    # self.illustration.setPlaceholderText("Example: https://bit.ly/someLinkHere")
-    # self.illustration.setFixedSize(465, 45)
-    # self.illustration.move(660, 480)
-    # self.illustration.setStyleSheet('''
-    #   padding: 11px 30px 11px 30px;
-    #   border: 1px solid rgba(255, 255, 255, 0.8);
-    #   border-radius: 20px;
-    #   color: rgba(255, 255, 255, 0.8);
-    #   background-color: #3E405B
-    # ''')
-    # self.illustration.setFont(inter16)
-
-    self.goBack = QPushButton(self)
-    self.goBack.setText("Back")
-    self.goBack.setFixedSize(180, 45)
-    self.goBack.move(60, 615)
-    self.goBack.setStyleSheet(f'''
-      QPushButton {{
-        color: #ffffff;
-        background-color: #F10628;
-        border: none;
-        border-radius: 12px;
-      }}
-      QPushButton:hover {{
-        background-color: #f43853;
-      }}
-    ''')
-    self.goBack.setFont(inter16)
-    self.goBack.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-    self.goBack.clicked.connect(self.backToDisplayWorkout)
-
-    self.Add = QPushButton(self)
-    self.Add.setText("Add")
-    self.Add.setFixedSize(180, 45)
-    self.Add.move(270, 615)
-    self.Add.setStyleSheet('''
+    self.Submit = QPushButton(self)
+    self.Submit.setText("Submit Answer")
+    self.Submit.setFixedSize(180, 45)
+    self.Submit.move(1020, 615)
+    self.Submit.setStyleSheet('''
       QPushButton {
         color: #ffffff;
         background-color: qlineargradient(x1:0, y1:0, x2:1, y2: 1, stop:0 #5561ff, stop:1 #3643fc);
@@ -217,12 +179,12 @@ class DisplayCourseStudent(QWidget):
         background-color: qlineargradient(x1:0, y1:0, x2:1, y2: 1, stop:0 #6b75ff, stop:1 #535fff);
       }
     ''')
-    self.Add.setFont(inter16)
-    self.Add.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-    self.Add.clicked.connect(self.addWorkout)
+    self.Submit.setFont(inter16)
+    self.Submit.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+    self.Submit.clicked.connect(self.submitAnswer)
 
   def fetchFinalProject(self):
-    c = self.conn2.cursor()
+    c = self.connFinalProject.cursor()
     c.execute("SELECT * FROM final_project where final_project_id = 1")
     final_project = c.fetchone()
     c.close()
@@ -232,7 +194,7 @@ class DisplayCourseStudent(QWidget):
     self.final_project = dataFinalProject
 
   def fetchCourse(self):
-    c = self.conn.cursor()
+    c = self.connCourse.cursor()
     c.execute("SELECT * FROM course where course_id = 1")
     course = c.fetchone()
     c.close()
@@ -241,43 +203,26 @@ class DisplayCourseStudent(QWidget):
 
     self.course = dataCourse
 
-  def addWorkout(self):
-    if (self.title.text() == '' or self.specification.text() == '' or self.desc.toPlainText() == '' or self.illustration.text() == '' or self.Tutorial.text() == ''):
+  def submitAnswer(self):
+    if (self.answer.toPlainText() == ''):
       msgBox = QMessageBox()
-      msgBox.setText("<p>Please fill out the form properly!</p>")
-      msgBox.setWindowTitle("Add New Workout Failed")
+      msgBox.setText("<p>Please fill out the answer!</p>")
+      msgBox.setWindowTitle("Submit Answer Failed")
       msgBox.setIcon(QMessageBox.Icon.Warning)
       msgBox.setStyleSheet("background-color: white")
       msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
       msgBox.exec()
       return
-    c = self.conn.cursor()
-    c.execute(f"SELECT * FROM list_olahraga WHERE name = '{self.title.text()}' AND specification = '{self.specification.text()}' AND forUser = 'null'")
-    if (c.fetchone() != None):
-      msgBox = QMessageBox()
-      msgBox.setText("<p>Workout already exists!</p>")
-      msgBox.setWindowTitle("Add New Workout Failed")
-      msgBox.setIcon(QMessageBox.Icon.Warning)
-      msgBox.setStyleSheet("background-color: white")
-      msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
-      msgBox.exec()
-      return
-    c.execute(f"INSERT INTO list_olahraga (name, description, specification, linkIllustration, linkTutorial, forUser) VALUES ('{self.title.text()}', '{self.desc.toPlainText()}', '{self.specification.text()}', '{self.illustration.text()}', '{self.Tutorial.text()}', NULL)")
-    self.conn.commit()
-  # Tunjukkan registrasi berhasil
+    c = self.connFinalProjectAnswer.cursor()
+    c.execute(f"INSERT INTO final_project_answer(course_id, final_project_id, user_id, answer) VALUES ('{self.course['course_id']}','{self.final_project['final_project_id']}', '{self.user['user_id']}', '{self.answer.toPlainText()}')")
+    self.connFinalProjectAnswer.commit()
     msgBox = QMessageBox()
-    msgBox.setText(f"<p>Workout has been added successfully!</p>")
-    msgBox.setWindowTitle("Add New Workout Successful")
+    msgBox.setText(f"<p>Answer has been submitted successfully!</p>")
+    msgBox.setWindowTitle("Submit Answer Successful")
     msgBox.setIcon(QMessageBox.Icon.Information)
     msgBox.setStyleSheet("background-color: white")
     msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
     msgBox.exec()
-  # Clear form inputs
-    self.title.clear()
-    self.specification.clear()
-    self.desc.clear()
-    self.illustration.clear()
-    self.Tutorial.clear()
         
   def backToDisplayWorkout(self):
     self.switch.emit("display_workout", self.user)
