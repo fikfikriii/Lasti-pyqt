@@ -214,7 +214,7 @@ class LoginWindow(QWidget):
                     "password": resuser[4],
                     "enrolled_course": resuser[5]
                 }
-                self.switch.emit("user_dashboard", user)
+                self.switch.emit("dashboard_user", user)
         else:    
             cinstructor = self.connectInstructor.cursor()
             cinstructor.execute(
@@ -246,7 +246,7 @@ class LoginWindow(QWidget):
                     "email": resinstructor[3],
                     "password": resinstructor[4],
                 }
-                self.switch.emit("instructor_dashboard", instructor)
+                self.switch.emit("dashboard_instructor", instructor)
 
     def clearForm(self):
         self.passwordEdit.clear()
