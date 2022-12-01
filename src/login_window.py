@@ -205,7 +205,7 @@ class LoginWindow(QWidget):
                 msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
                 msgBox.exec()
                 user = {
-                    "id": resuser[0],
+                    "user_id": resuser[0],
                     "name": resuser[1],
                     "username": resuser[2],
                     "email": resuser[3],
@@ -238,7 +238,7 @@ class LoginWindow(QWidget):
                 msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
                 msgBox.exec()
                 instructor = {
-                    "id": resinstructor[0],
+                    "user_id": resinstructor[0],
                     "name": resinstructor[1],
                     "username": resinstructor[2],
                     "email": resinstructor[3],

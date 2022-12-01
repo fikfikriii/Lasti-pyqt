@@ -56,6 +56,7 @@ class Controller:
         elif page == "display_course_student":
             self.displayCourseStudent.updateUser(user)
             self.displayCourseStudent.updateCourse(course)
+            self.displayCourseStudent.fetchFinalProject()
             self.displayCourseStudent.show()
             
     def fromDisplayCourseStudent(self, page, user):
@@ -72,6 +73,7 @@ class Controller:
         elif page == "instructor_dashboard":
             self.instructorDashboard.updateUser(instructor)
             self.instructorDashboard.updateCourse(course)
+            self.instructorDashboard.fetchAnswer()
             self.instructorDashboard.show()
 
     def fromInstructorDashboard(self, page, instructor):

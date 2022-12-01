@@ -159,6 +159,7 @@ class DisplayCourseStudent(QWidget):
     self.answer_heading.move(660,300)
     self.answer_heading.setStyleSheet(f"color: {white}; background-color: {bg_color}")
     self.answer_heading.setFont(inter18)
+    
     self.answer = QTextEdit(self)
     self.answer.setFixedSize(540, 250)
     self.answer.move(660, 330)
@@ -226,6 +227,7 @@ class DisplayCourseStudent(QWidget):
     msgBox.setStyleSheet("background-color: white")
     msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
     msgBox.exec()
+    self.answer.clear()
     
   def updateUser(self, user):
     self.user = user
