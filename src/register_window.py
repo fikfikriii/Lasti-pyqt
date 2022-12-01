@@ -7,9 +7,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCursor, QFont, QPixmap
 from PyQt6.QtWidgets import (QApplication, QLabel, QLineEdit, QMessageBox,
                              QPushButton, QRadioButton, QWidget)
-
 from custom_widgets import ClickableLabel
-
 card_bg = '#3E405B'
 gray = 'rgba(255, 255, 255, 0.8)'
 

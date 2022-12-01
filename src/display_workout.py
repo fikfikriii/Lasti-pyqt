@@ -30,7 +30,7 @@ class DisplayWorkout(QWidget):
             self.user = user
         else:
             self.user = {
-                "fullname": "John Doe",
+                "name": "John Doe",
                 "username": "johndoe",
                 "email": "johndoe@gmail.com",
                 "password": "johndoe",
@@ -75,7 +75,7 @@ class DisplayWorkout(QWidget):
 
         # Set up hello label
         self.helloLabel = QLabel(self)
-        self.helloLabel.setText(f"Hello, {self.user['fullname']}!")
+        self.helloLabel.setText(f"Hello, {self.user['name']}!")
         self.helloLabel.move(635, 44)
         self.helloLabel.setStyleSheet("color: rgba(255, 255, 255, 0.8); background-color: {BG_COLOR}")
         self.helloLabel.setFixedSize(585, 29)
@@ -238,14 +238,7 @@ class DisplayWorkout(QWidget):
         if self.pageCourses > 0:
             self.pageCourses -= 1
             self.setUpDisplayCourses()
-
-    def backWP(self):
-        self.listCoursesPlan = None
-        self.pageCourses = 0
-        self.headingTop.setText("Courses Activity")
-        self.headingBottom.show()
-        self.setUpDisplayCourses()
-
+            
     def fetchCourses(self):
         c = self.conn.cursor()
         c.execute("SELECT * FROM course")
@@ -263,18 +256,22 @@ class DisplayWorkout(QWidget):
             })
         self.course = dataCourses
 
-
     def updateUser(self, user):
         self.user = user
-        self.helloLabel.setText(f"Hello, {self.user['fullname']}!")
+        self.helloLabel.setText(f"Hello, {self.user['name']}!")
 
     def logout(self):
-        print("logout")
         self.switch.emit("login", {}, {})
-        print("te")
     
     def openCourse(self, i):
-        self.switch.emit("display_course_student", self.user, self.course[i])
+        course = {
+            "course_id": self.course[i]["course_id"],
+            "name": self.course[i]["name"],
+            "description": self.course[i]["description"],
+            "cost": self.course[i]["cost"],
+            "owner_id": self.course[i]["owner_id"]
+        }
+        self.switch.emit("display_course_student", self.user, course)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

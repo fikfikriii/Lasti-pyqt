@@ -223,10 +223,7 @@ class DisplayCourseStudent(QWidget):
     msgBox.setStyleSheet("background-color: white")
     msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
     msgBox.exec()
-        
-  def backToDisplayWorkout(self):
-    self.switch.emit("display_workout", self.user)
-
+    
   def updateUser(self, user):
     self.user = user
     self.helloLabel.setText(f"Hello, {self.user['name']}!")
@@ -236,7 +233,6 @@ class DisplayCourseStudent(QWidget):
 
   def logOut(self):
     self.switch.emit("display_workout", self.user)
-    self.displayWorkout.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -185,7 +185,6 @@ class LoginWindow(QWidget):
         cuser.execute(
             f"SELECT * FROM user WHERE (username = '{self.usernameEdit.text()}' OR email = '{self.usernameEdit.text()}')")
         resuser = cuser.fetchone()
-        print(resuser)
         if resuser:
             if resuser != None and not self.comparePass(self.passwordEdit.text(), resuser[4]):
                 resuser = None
@@ -208,7 +207,7 @@ class LoginWindow(QWidget):
                 msgBox.exec()
                 user = {
                     "id": resuser[0],
-                    "fullname": resuser[1],
+                    "name": resuser[1],
                     "username": resuser[2],
                     "email": resuser[3],
                     "password": resuser[4],
@@ -241,7 +240,7 @@ class LoginWindow(QWidget):
                 msgBox.exec()
                 instructor = {
                     "id": resinstructor[0],
-                    "fullname": resinstructor[1],
+                    "name": resinstructor[1],
                     "username": resinstructor[2],
                     "email": resinstructor[3],
                     "password": resinstructor[4],
@@ -256,5 +255,4 @@ class LoginWindow(QWidget):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = LoginWindow()
-    print(vars(window))
     sys.exit(app.exec())

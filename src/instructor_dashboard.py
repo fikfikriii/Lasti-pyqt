@@ -39,7 +39,7 @@ class InstructorDashboard(QWidget):
       self.user = user
     else:
       self.user = {
-        "fullname": "John Doe",
+        "name": "John Doe",
         "username": "johndoe",
         "email": "johndoe@gmail.com",
         "password": "johndoe",
@@ -89,7 +89,7 @@ class InstructorDashboard(QWidget):
     # logo.setStyleSheet(f"background-color: {bg_color}")
     # Set up hello label
     self.helloLabel = QLabel(self)
-    self.helloLabel.setText(f"Hello, {self.user['fullname']}!")
+    self.helloLabel.setText(f"Hello, {self.user['name']}!")
     self.helloLabel.move(635, 44)
     self.helloLabel.setStyleSheet(f'color: rgba(255, 255, 255, 0.8); background-color: {bg_color}')
     self.helloLabel.setFixedSize(585, 29)
@@ -463,7 +463,7 @@ class InstructorDashboard(QWidget):
 
   def updateUser(self, user):
     self.user = user
-    self.helloLabel.setText(f"Hello, {self.user['fullname']}!")
+    self.helloLabel.setText(f"Hello, {self.user['name']}!")
 
   def back(self):
     self.switch.emit("login", {})

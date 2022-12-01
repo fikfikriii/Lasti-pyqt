@@ -6,7 +6,6 @@ from tkinter import E
 from PyQt6.QtWidgets import QApplication
 
 from display_workout import DisplayWorkout
-from display_workout_trainer import DisplayWorkoutTrainer
 from login_window import LoginWindow
 from register_window import RegisterWindow
 from display_course_student import DisplayCourseStudent
@@ -20,8 +19,6 @@ class Controller:
         self.registerWindow.switch.connect(self.fromRegister)
         self.displayWorkout = DisplayWorkout()
         self.displayWorkout.switch.connect(self.fromDisplayWorkout)
-        self.displayWorkoutTrainer = DisplayWorkoutTrainer()
-        self.displayWorkoutTrainer.switch.connect(self.fromDisplayWorkoutTrainer)
         self.displayCourseStudent = DisplayCourseStudent()
         self.displayCourseStudent.switch.connect(self.fromDisplayCourseStudent)
         # self.trainerAddWorkout.connect(self.from)
@@ -41,6 +38,7 @@ class Controller:
             self.registerWindow.show()
         elif page == "display_workout":
             self.displayWorkout.updateUser(user)
+            print('masuk')
             self.displayWorkout.show()
         elif page == "dashboard_instructor":
             self.trainerDashboard.updateUser(user)
@@ -52,21 +50,15 @@ class Controller:
             self.loginWindow.clearForm()
             self.loginWindow.show()
         elif page == "display_course_student":
+            self.displayCourseStudent.updateUser(user)
             self.displayCourseStudent.updateCourse(course)
             self.displayCourseStudent.show()
-
-    def fromDisplayWorkoutTrainer(self, page, user):
-        self.displayWorkoutTrainer.close()
-        if page == "login":
-            self.loginWindow.clearForm()
-            self.loginWindow.show()
         
     def fromDisplayCourseStudent(self, page, user):
         self.displayCourseStudent.close()
         if page == 'display_workout':
-            self.displayWorkoutTrainer.updateUser(user)
-            self.displayWorkoutTrainer.updateDisplayWorkout()
-            self.displayWorkoutTrainer.show()
+            self.displayWorkout.updateUser(user)
+            self.displayWorkout.show()
 
     
     def initializeDatabase(self):
