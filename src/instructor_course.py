@@ -43,10 +43,6 @@ class InstructorCourse(QWidget):
         self.fetchCourses()
         self.setUpDisplayCoursesWindow()
 
-    def updateDisplayCourses(self):
-        self.fetchCourses()
-        self.setUpDisplayCourses()
-
     def setUpDisplayCoursesWindow(self):
         self.setFixedSize(1280, 720)
         self.setWindowTitle("Udemy - Instructor Courses")

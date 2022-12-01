@@ -62,6 +62,14 @@ class InstructorDashboard(QWidget):
       "name": "Ini adalah final project",
       "question": "Ini adalah soal final project"
     }
+    self.answer = {
+      "final_project_id": 1,
+      "course_id": 1,
+      "user_id": 1,
+      "answer": "Ini adalah soal final project",
+      "score": 80
+    }
+    self.fetchAnswer()
     self.setUpDashboardWindow()
 
   def setUpDashboardWindow(self):
@@ -71,16 +79,30 @@ class InstructorDashboard(QWidget):
   
   def setUpWidgets(self):
     # Fonts
-    inter13 = QFont()
-    inter13.setFamily("Inter")
-    inter13.setPixelSize(13)
+    self.inter10bold = QFont()
+    self.inter10bold.setFamily("Inter")
+    self.inter10bold.setPixelSize(10)
+    self.inter10bold.setBold(True)
+    
+    inter10 = QFont()
+    inter10.setFamily("Inter")
+    inter10.setPixelSize(10)
+
+    self.inter11bold = QFont()
+    self.inter11bold.setFamily("Inter")
+    self.inter11bold.setPixelSize(11)
+    self.inter11bold.setBold(True)
+    
+    inter12 = QFont()
+    inter12.setFamily("Inter")
+    inter12.setPixelSize(12)
 
     inter16 = QFont()
-    inter16.setFamily("Inter"); 
+    inter16.setFamily("Inter") 
     inter16.setPixelSize(16)
 
     inter18 = QFont()
-    inter18.setFamily("Inter"); 
+    inter18.setFamily("Inter") 
     inter18.setPixelSize(18)    
 
     inter24 = QFont()
@@ -277,6 +299,7 @@ class InstructorDashboard(QWidget):
     # ''')
     # self.illustration.setFont(inter16)
     self.initializeAnswerCards()
+    self.setUpDisplayAnswer()
 
   def fetchFinalProject(self):
     c = self.connFinalProject.cursor()
@@ -287,17 +310,26 @@ class InstructorDashboard(QWidget):
     dataFinalProject = {"final_project_id" : final_project[0], "name" : final_project[1], "course_id" : final_project[2], "question" : final_project[3]}
 
     self.final_project = dataFinalProject
-
-  def fetchCourse(self):
-    c = self.connCourse.cursor()
-    c.execute("SELECT * FROM course where course_id = 1")
-    course = c.fetchone()
-    c.close()
     
-    dataCourse = {"course_id" : course[0], "name" : course[1], "description" : course[2], "cost" : course[3], "owner_id" : course[4]}
+  def fetchAnswer(self):
+        c = self.connFinalProjectAnswer.cursor()
+        c.execute("""
+          SELECT * FROM final_project_answer WHERE course_id = 1
+        """)
+        answers = c.fetchall()
+        c.close()
 
-    self.course = dataCourse
-    
+        dataAnswer = []
+        for answer in answers:
+            dataAnswer.append({
+              "course_id": answer[0],
+              "final_project_id": answer[1],
+              "user_id": answer[2],
+              "answer": answer[3],
+              "score": answer[4]
+            })
+        self.answer = dataAnswer
+        
   def initializeAnswerCards(self):
       # Set up font
       inter10 = QFont()
@@ -350,10 +382,17 @@ class InstructorDashboard(QWidget):
           # self.AnswerCards[i]["cardIllustration"].setStyleSheet(f"background-color: {YELLOW}")
           # self.AnswerCards[i]["cardIllustration"].setPixmap(QPixmap("../img/push-up.png"))
           self.AnswerCards[i]["cardTitle"] = QLabel(self)
-          self.AnswerCards[i]["cardTitle"].setGeometry(QRect(670, 235 + (i%3*100), 260, 30))
-          self.AnswerCards[i]["cardTitle"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: {YELLOW}")
+          self.AnswerCards[i]["cardTitle"].setGeometry(QRect(670, 227 + (i%3*100), 260, 10))
+          self.AnswerCards[i]["cardTitle"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: rgba(254, 193, 102, 0)")
           self.AnswerCards[i]["cardTitle"].setText("Title")
-          self.AnswerCards[i]["cardTitle"].setFont(inter16bold)
+          self.AnswerCards[i]["cardTitle"].setFont(self.inter11bold)
+          
+          self.AnswerCards[i]["cardAnswer"] = QLabel(self)
+          self.AnswerCards[i]["cardAnswer"].setGeometry(QRect(670, 255 + (i%3*100), 260, 10))
+          self.AnswerCards[i]["cardAnswer"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: rgba(254, 193, 102, 0)")
+          self.AnswerCards[i]["cardAnswer"].setText("Answer")
+          self.AnswerCards[i]["cardAnswer"].setFont(inter12)
+          
           # self.AnswerCards[i]["cardDescription"] = QLabel(self)
           # self.AnswerCards[i]["cardDescription"].setText("Description")
           # self.AnswerCards[i]["cardDescription"].setGeometry(QRect(172 + (i%3*340), 366, 256, 64))
@@ -380,44 +419,28 @@ class InstructorDashboard(QWidget):
           # self.AnswerCards[i]["Save"].clicked.connect(lambda x, i=i: self.openTutorial(i))
           self.AnswerCards[i]["Save"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
-  def setUpDisplayWorkout(self):
-      listWorkout = self.workout
-      start = self.pageWorkout*3
+  def setUpDisplayAnswer(self):
+      listAnswer = self.answer
+      # start = self.pageWorkout*3
       for i in range(3):
-          if start+i < len(listWorkout):
-              self.AnswerCards[i]["cardTitle"].setText(listWorkout[start+i]["name"])
-              if (listWorkout[start+i]["linkIllustration"][:4] == "http"):
-                  pixmap = QPixmap()
-                  request = requests.get(listWorkout[start+i]["linkIllustration"])
-                  pixmap.loadFromData(request.content)
-                  self.AnswerCards[i]["cardIllustration"].setPixmap(pixmap.scaledToHeight(120))
-              else:
-                self.AnswerCards[i]["cardIllustration"].setPixmap(QPixmap(listWorkout[start+i]["linkIllustration"]))
-                self.AnswerCards[i]["cardDescription"].setText(listWorkout[start+i]["description"])
-                self.AnswerCards[i]["cardSpecification"].setText(listWorkout[start+i]["specification"])
-                self.AnswerCards[i]["card"].show()
-                self.AnswerCards[i]["cardIllustration"].show()
-                self.AnswerCards[i]["cardTitle"].show()
-                self.AnswerCards[i]["cardDescription"].show()
-                self.AnswerCards[i]["cardSpecification"].show()
-                self.AnswerCards[i]["Save"].show()
+          if i < len(listAnswer):
+              self.AnswerCards[i]["cardTitle"].setText("User ID: " + str(listAnswer[i]["user_id"]))
+              self.AnswerCards[i]["cardAnswer"].setText(listAnswer[i]["answer"])
+              self.AnswerCards[i]["cardTitle"].show()
+              self.AnswerCards[i]["cardAnswer"].show()
           else:
-              self.AnswerCards[i]["card"].hide()
-              self.AnswerCards[i]["cardIllustration"].hide()
               self.AnswerCards[i]["cardTitle"].hide()
-              self.AnswerCards[i]["cardDescription"].hide()
-              self.AnswerCards[i]["cardSpecification"].hide()
-              self.AnswerCards[i]["Save"].hide()
+              self.AnswerCards[i]["cardAnswer"].hide()
 
-      if self.pageWorkout == 0:
-          self.leftWorkoutButton.hide()
-      else:
-          self.leftWorkoutButton.show()
+      # if self.pageWorkout == 0:
+      #     self.leftWorkoutButton.hide()
+      # else:
+      #     self.leftWorkoutButton.show()
 
-      if start + 3 < len(listWorkout):
-          self.rightWorkoutButton.show()
-      else:
-          self.rightWorkoutButton.hide()
+      # if start + 3 < len(listAnswer):
+      #     self.rightWorkoutButton.show()
+      # else:
+      #     self.rightWorkoutButton.hide()
 
   def updateCourse(self, course):
     self.course = course

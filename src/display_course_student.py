@@ -200,16 +200,6 @@ class DisplayCourseStudent(QWidget):
 
     self.final_project = dataFinalProject
 
-  def fetchCourse(self):
-    c = self.connCourse.cursor()
-    c.execute("SELECT * FROM course where course_id = 1")
-    course = c.fetchone()
-    c.close()
-
-    dataCourse = {"course_id" : course[0], "name" : course[1], "description" : course[2], "cost" : course[3], "owner_id" : course[4]}
-
-    self.course = dataCourse
-
   def submitAnswer(self):
     if (self.answer.toPlainText() == ''):
       msgBox = QMessageBox()
@@ -221,7 +211,13 @@ class DisplayCourseStudent(QWidget):
       msgBox.exec()
       return
     c = self.connFinalProjectAnswer.cursor()
-    c.execute(f"INSERT INTO final_project_answer(course_id, final_project_id, user_id, answer) VALUES ('{self.course['course_id']}','{self.final_project['final_project_id']}', '{self.user['user_id']}', '{self.answer.toPlainText()}')")
+    c.execute(f'SELECT answer FROM final_project_answer WHERE user_id = {self.user["user_id"]}')
+    print(c)
+    if (c == None):
+      c.execute(f"INSERT INTO final_project_answer(course_id, final_project_id, user_id, answer) VALUES ('{self.course['course_id']}','{self.final_project['final_project_id']}', '{self.user['user_id']}', '{self.answer.toPlainText()}')")
+    else:
+      c.execute(f"UPDATE final_project_answer SET answer = '{self.answer.toPlainText()}' WHERE user_id = {self.user['user_id']}")
+      
     self.connFinalProjectAnswer.commit()
     msgBox = QMessageBox()
     msgBox.setText(f"<p>Answer has been submitted successfully!</p>")
