@@ -141,13 +141,12 @@ class Controller:
             c = self.conn.cursor()
             c.execute("""
                 CREATE TABLE IF NOT EXISTS user (
-                user_id integer PRIMARY KEY ,
+                user_id integer PRIMARY KEY,
                 name text,
                 username text,
                 email text,
                 password text,
-                enrolled_course integer
-                FOREIGN KEY 
+                enrolled_course integer )
             """)
         
         if not os.path.exists("instructor.db"):
@@ -159,15 +158,7 @@ class Controller:
                 name text,
                 username text,
                 email text,
-                password text
-            """)
-            c.execute("""
-            INSERT INTO instructor
-                (instructor_id, name, username, email, password)
-            VALUES 
-                (1, "Fikri", "fikri249", "fikri@tes.com", "fikri249"), 
-                (2, "Umar", "umar", "umar@tes.com", "umar", "umar"),
-                (3, "Widi", "widi", "widi@tes.com", "widi", "widi")
+                password text )
             """)
         
         if not os.path.exists("course.db"):

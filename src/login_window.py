@@ -25,11 +25,12 @@ class LoginWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setUpLoginWindow()
-        self.conn = sqlite3.connect("fitpal.db")
+        self.connectUser = sqlite3.connect("user.db")
+        self.connectInstructor = sqlite3.connect("instructor.db")
 
     def setUpLoginWindow(self):
         self.setFixedSize(1280, 720)
-        self.setWindowTitle("FitPal - Log In")
+        self.setWindowTitle("Udemy - Log In")
         self.setUpWidgets()
 
     def setUpWidgets(self):
@@ -179,41 +180,73 @@ class LoginWindow(QWidget):
         return bcrypt.checkpw(password.encode(), hashPassword.encode())
 
     def login(self):
-        c = self.conn.cursor()
-        c.execute(
+        flag = False
+        cuser = self.connectUser.cursor()
+        cuser.execute(
             f"SELECT * FROM user WHERE (username = '{self.usernameEdit.text()}' OR email = '{self.usernameEdit.text()}')")
-        res = c.fetchone()
-        if res != None and not self.comparePass(self.passwordEdit.text(), res[4]):
-            res = None
-        if res == None:
-            msgBox = QMessageBox()
-            msgBox.setText(
-                "<p>Username/email and password combination not found!</p>")
-            msgBox.setWindowTitle("Login Failed")
-            msgBox.setIcon(QMessageBox.Icon.Warning)
-            msgBox.setStyleSheet("background-color: white")
-            msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
-            msgBox.exec()
-        else:
-            msgBox = QMessageBox()
-            msgBox.setText(f"<p>Hello, {res[1]}!</p>")
-            msgBox.setWindowTitle("Login Successful")
-            msgBox.setIcon(QMessageBox.Icon.Information)
-            msgBox.setStyleSheet("background-color: white")
-            msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
-            msgBox.exec()
-            user = {
-                "id": res[0],
-                "fullname": res[1],
-                "username": res[2],
-                "email": res[3],
-                "password": res[4],
-                "type": res[5]
-            }
-            if (res[5] == "user"):
-                self.switch.emit("user_dashboard", user)
+        resuser = cuser.fetchone()
+        print(resuser)
+        if resuser:
+            if resuser != None and not self.comparePass(self.passwordEdit.text(), resuser[4]):
+                resuser = None
+                if resuser == None:
+                    msgBox = QMessageBox()
+                    msgBox.setText(
+                        "<p>Username/email and password combination not found!</p>")
+                    msgBox.setWindowTitle("Login Failed")
+                    msgBox.setIcon(QMessageBox.Icon.Warning)
+                    msgBox.setStyleSheet("background-color: white")
+                    msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
+                    msgBox.exec()
             else:
-                self.switch.emit("trainer_dashboard", user)
+                msgBox = QMessageBox()
+                msgBox.setText(f"<p>Hello, {resuser[1]}!</p>")
+                msgBox.setWindowTitle("Login Successful")
+                msgBox.setIcon(QMessageBox.Icon.Information)
+                msgBox.setStyleSheet("background-color: white")
+                msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
+                msgBox.exec()
+                user = {
+                    "id": resuser[0],
+                    "fullname": resuser[1],
+                    "username": resuser[2],
+                    "email": resuser[3],
+                    "password": resuser[4],
+                    "enrolled_course": resuser[5]
+                }
+                self.switch.emit("user_dashboard", user)
+        else:    
+            cinstructor = self.connectInstructor.cursor()
+            cinstructor.execute(
+                f"SELECT * FROM instructor WHERE (username = '{self.usernameEdit.text()}' OR email = '{self.usernameEdit.text()}')")
+            resinstructor = cinstructor.fetchone()
+            if resinstructor != None and not self.comparePass(self.passwordEdit.text(), resinstructor[4]):
+                resinstructor = None
+                if resinstructor == None:
+                    msgBox = QMessageBox()
+                    msgBox.setText(
+                        "<p>Username/email and password combination not found!</p>")
+                    msgBox.setWindowTitle("Login Failed")
+                    msgBox.setIcon(QMessageBox.Icon.Warning)
+                    msgBox.setStyleSheet("background-color: white")
+                    msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
+                    msgBox.exec()
+            else:
+                msgBox = QMessageBox()
+                msgBox.setText(f"<p>Hello, {resinstructor[1]}!</p>")
+                msgBox.setWindowTitle("Login Successful")
+                msgBox.setIcon(QMessageBox.Icon.Information)
+                msgBox.setStyleSheet("background-color: white")
+                msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
+                msgBox.exec()
+                instructor = {
+                    "id": resinstructor[0],
+                    "fullname": resinstructor[1],
+                    "username": resinstructor[2],
+                    "email": resinstructor[3],
+                    "password": resinstructor[4],
+                }
+                self.switch.emit("instructor_dashboard", instructor)
 
     def clearForm(self):
         self.passwordEdit.clear()

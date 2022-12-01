@@ -20,11 +20,12 @@ class RegisterWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setUpRegisterWindow()
-        self.conn = sqlite3.connect("fitpal.db")
+        self.connectUser = sqlite3.connect("user.db")
+        self.connectInstructor = sqlite3.connect('instructor.db')
 
     def setUpRegisterWindow(self):
         self.setFixedSize(1280, 720)
-        self.setWindowTitle("FitPal - Register")
+        self.setWindowTitle("Udemy - Register")
         self.setUpWidgets()
 
     def setUpWidgets(self):
@@ -52,7 +53,7 @@ class RegisterWindow(QWidget):
 
         # Heading label
         heading = QLabel(self)
-        heading.setText("Welcome to FitPal!")
+        heading.setText("Welcome to Udemy!")
         heading.setFont(inter24)
         heading.setStyleSheet(f'color: {gray}; background-color: {card_bg}')
         heading.move(533, 105)
@@ -60,14 +61,14 @@ class RegisterWindow(QWidget):
         # Subheading label
         subheading = QLabel(self)
         subheading.setText(
-            "Create an account to enjoy a new experience in working out!")
+            "Create an account to enjoy a new experience in learning!")
         subheading.setFont(inter16)
         subheading.setStyleSheet(f'color: {gray}; background-color: {card_bg}')
         subheading.move(404, 146)
 
         # Full name input
         self.nameEdit = QLineEdit(self)
-        self.nameEdit.setPlaceholderText("Full name")
+        self.nameEdit.setPlaceholderText("Name")
         self.nameEdit.setFixedSize(466, 46)
         self.nameEdit.setFont(inter16)
         self.nameEdit.setStyleSheet('''
@@ -138,14 +139,14 @@ class RegisterWindow(QWidget):
         self.rbUser.setFont(inter14)
         self.rbUser.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
-        # Trainer radio button
-        self.rbTrainer = QRadioButton(self)
-        self.rbTrainer.move(565, 487)
-        self.rbTrainer.setStyleSheet(
+        # Instructor radio button
+        self.rbInstructor = QRadioButton(self)
+        self.rbInstructor.move(565, 487)
+        self.rbInstructor.setStyleSheet(
             f'background-color: {card_bg}; color: {gray}')
-        self.rbTrainer.setText("Trainer")
-        self.rbTrainer.setFont(inter14)
-        self.rbTrainer.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.rbInstructor.setText("Instructor")
+        self.rbInstructor.setFont(inter14)
+        self.rbInstructor.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         # Register push button
         self.registerButton = QPushButton(self)
@@ -229,7 +230,7 @@ class RegisterWindow(QWidget):
         return bcrypt.hashpw(bytePass, bcrypt.gensalt())
 
     def register(self):
-        if (self.nameEdit.text() == '' or self.unameEdit.text() == '' or self.emailEdit.text() == '' or self.passwordEdit.text() == '' or (not self.rbUser.isChecked() and not self.rbTrainer.isChecked())):
+        if (self.nameEdit.text() == '' or self.unameEdit.text() == '' or self.emailEdit.text() == '' or self.passwordEdit.text() == '' or (not self.rbUser.isChecked() and not self.rbInstructor.isChecked())):
             msgBox = QMessageBox()
             msgBox.setText("<p>Please fill out the form properly!</p>")
             msgBox.setWindowTitle("Registration Failed")
@@ -256,42 +257,70 @@ class RegisterWindow(QWidget):
             msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
             msgBox.exec()
             return
-        c = self.conn.cursor()
-        c.execute(
-            f"SELECT * FROM user WHERE username = '{self.unameEdit.text()}'")
-        if (c.fetchone() != None):
-            msgBox = QMessageBox()
-            msgBox.setText("<p>Username already registered!</p>")
-            msgBox.setWindowTitle("Registration Failed")
-            msgBox.setIcon(QMessageBox.Icon.Warning)
-            msgBox.setStyleSheet("background-color: white")
-            msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
-            msgBox.exec()
-            return
-        c.execute(
-            f"SELECT * FROM user WHERE email = '{self.emailEdit.text()}'")
-        if (c.fetchone() != None):
-            msgBox = QMessageBox()
-            msgBox.setText("<p>Email already registered!</p>")
-            msgBox.setWindowTitle("Registration Failed")
-            msgBox.setIcon(QMessageBox.Icon.Warning)
-            msgBox.setStyleSheet("background-color: white")
-            msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
-            msgBox.exec()
-            return
-        hashedPass = self.hashPassword(self.passwordEdit.text())
-        hashedPass = hashedPass.decode()
+        
         if (self.rbUser.isChecked()):
+            c = self.connectUser.cursor()
             c.execute(
-                f"INSERT INTO user (fullname, username, email, password, type) VALUES ('{self.nameEdit.text()}', '{self.unameEdit.text()}', '{self.emailEdit.text()}', '{hashedPass}', 'user')")
-            self.conn.commit()
-        else:
+                f"SELECT * FROM user WHERE username = '{self.unameEdit.text()}'")
+            if (c.fetchone() != None):
+                msgBox = QMessageBox()
+                msgBox.setText("<p>Username already registered!</p>")
+                msgBox.setWindowTitle("Registration Failed")
+                msgBox.setIcon(QMessageBox.Icon.Warning)
+                msgBox.setStyleSheet("background-color: white")
+                msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
+                msgBox.exec()
+                return
             c.execute(
-                f"INSERT INTO user (fullname, username, email, password, type) VALUES ('{self.nameEdit.text()}', '{self.unameEdit.text()}', '{self.emailEdit.text()}', '{hashedPass}', 'trainer')")
-            self.conn.commit()
+                f"SELECT * FROM user WHERE email = '{self.emailEdit.text()}'")
+            if (c.fetchone() != None):
+                msgBox = QMessageBox()
+                msgBox.setText("<p>Email already registered!</p>")
+                msgBox.setWindowTitle("Registration Failed")
+                msgBox.setIcon(QMessageBox.Icon.Warning)
+                msgBox.setStyleSheet("background-color: white")
+                msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
+                msgBox.exec()
+                return
+            hashedPass = self.hashPassword(self.passwordEdit.text())
+            hashedPass = hashedPass.decode()
+            c.execute(
+                f"INSERT INTO user (name, username, email, password) VALUES ('{self.nameEdit.text()}', '{self.unameEdit.text()}', '{self.emailEdit.text()}', '{hashedPass}')")
+            self.connectUser.commit()
+            
+        elif (self.rbInstructor.isChecked()):
+            c = self.connectInstructor.cursor()
+            c.execute(
+                f"SELECT * FROM instructor WHERE username = '{self.unameEdit.text()}'")
+            if (c.fetchone() != None):
+                msgBox = QMessageBox()
+                msgBox.setText("<p>Username already registered!</p>")
+                msgBox.setWindowTitle("Registration Failed")
+                msgBox.setIcon(QMessageBox.Icon.Warning)
+                msgBox.setStyleSheet("background-color: white")
+                msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
+                msgBox.exec()
+                return
+            c.execute(
+                f"SELECT * FROM instructor WHERE email = '{self.emailEdit.text()}'")
+            if (c.fetchone() != None):
+                msgBox = QMessageBox()
+                msgBox.setText("<p>Email already registered!</p>")
+                msgBox.setWindowTitle("Registration Failed")
+                msgBox.setIcon(QMessageBox.Icon.Warning)
+                msgBox.setStyleSheet("background-color: white")
+                msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
+                msgBox.exec()
+                return
+            hashedPass = self.hashPassword(self.passwordEdit.text())
+            hashedPass = hashedPass.decode()
+            c.execute(
+                f"INSERT INTO instructor (name, username, email, password) VALUES ('{self.nameEdit.text()}', '{self.unameEdit.text()}', '{self.emailEdit.text()}', '{hashedPass}')")
+            self.connectInstructor.commit()
+            
         # Tunjukkan registrasi berhasil
         msgBox = QMessageBox()
-        msgBox.setText(f"""<p>Welcome to FitPal, {self.nameEdit.text()}!</p>
+        msgBox.setText(f"""<p>Welcome to Udemy, {self.nameEdit.text()}!</p>
     <p>You will now be prompted to log in.</p>""")
         msgBox.setWindowTitle("Registration Successful")
         msgBox.setIcon(QMessageBox.Icon.Information)
