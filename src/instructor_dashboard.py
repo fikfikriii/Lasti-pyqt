@@ -67,6 +67,7 @@ class InstructorDashboard(QWidget):
   def setUpDashboardWindow(self):
     self.setFixedSize(1280, 720)
     self.setWindowTitle("Udemy - Edit Final Project")
+    self.fetchFinalProjectAnswer()
     self.setUpWidgets()
   
   def setUpWidgets(self):
@@ -176,7 +177,7 @@ class InstructorDashboard(QWidget):
     # ''')
     # self.title.setFont(inter16)
 
-    # Input spec
+    # input spec
     specification = QLabel(self)
     specification.setText("Description")
     specification.move(60,230)
@@ -207,24 +208,6 @@ class InstructorDashboard(QWidget):
     ''')
     self.specification.setFont(inter16)
 
-    # Tutorial = QLabel(self)
-    # Tutorial.setText("Tutorial Link")
-    # Tutorial.move(60,450)
-    # Tutorial.setStyleSheet(f"color: {white}; background-color: {bg_color}")
-    # Tutorial.setFont(inter18)
-    # self.Tutorial = QLineEdit(self)
-    # self.Tutorial.setPlaceholderText("Example: https://bit.ly/someLinkHere")
-    # self.Tutorial.setFixedSize(465, 45)
-    # self.Tutorial.move(60, 480)
-    # self.Tutorial.setStyleSheet('''
-    #   padding: 11px 30px 11px 30px;
-    #   border: 1px solid rgba(255, 255, 255, 0.8);
-    #   border-radius: 20px;
-    #   color: rgba(255, 255, 255, 0.8);
-    #   background-color: #3E405B
-    # ''')
-    # self.Tutorial.setFont(inter16)
-
     desc = QLabel(self)
     desc.setText("Final Exam (Case)")
     desc.move(60,330)
@@ -241,42 +224,9 @@ class InstructorDashboard(QWidget):
       background-color: #3E405B
     ''')
     self.desc.setFont(inter16)
-
-    # answer = QLabel(self)
-    # answer.setText("Final Exam (Case)")
-    # answer.move(660,330)
-    # answer.setStyleSheet(f"color: {white}; background-color: {bg_color}")
-    # answer.setFont(inter18)
-    # self.answer = QTextEdit(self)
-    # self.answer.setFixedSize(540, 200)
-    # self.answer.move(60, 360)
-    # self.answer.setStyleSheet('''
-    #   padding: 11px 30px 11px 30px;
-    #   border: 1px solid rgba(255, 255, 255, 0.8);
-    #   border-radius: 20px;
-    #   color: rgba(255, 255, 255, 0.8);
-    #   background-color: #3E405B
-    # ''')
-    # self.desc.setFont(inter16)
-
-    # illustration = QLabel(self)
-    # illustration.setText("Illustration Link")
-    # illustration.move(660,450)
-    # illustration.setStyleSheet(f"color: {white}; background-color: {bg_color}")
-    # illustration.setFont(inter18)
-    # self.illustration = QLineEdit(self)
-    # self.illustration.setPlaceholderText("Example: https://bit.ly/someLinkHere")
-    # self.illustration.setFixedSize(465, 45)
-    # self.illustration.move(660, 480)
-    # self.illustration.setStyleSheet('''
-    #   padding: 11px 30px 11px 30px;
-    #   border: 1px solid rgba(255, 255, 255, 0.8);
-    #   border-radius: 20px;
-    #   color: rgba(255, 255, 255, 0.8);
-    #   background-color: #3E405B
-    # ''')
-    # self.illustration.setFont(inter16)
+    
     self.initializeAnswerCards()
+    self.setUpDisplayAnswers()
 
   def fetchFinalProject(self):
     c = self.connFinalProject.cursor()
@@ -344,81 +294,82 @@ class InstructorDashboard(QWidget):
           self.AnswerCards[i]["card"] = QLabel(self)
           self.AnswerCards[i]["card"].setGeometry(QRect(660, 220 + (i * 100), 500, 60))
           self.AnswerCards[i]["card"].setStyleSheet(f"background-color: {YELLOW}")
-          # self.AnswerCards[i]["card"].setPixmap(QPixmap("../img/template-YELLOW-card.png"))
-          # self.AnswerCards[i]["cardIllustration"] = QLabel(self)
-          # self.AnswerCards[i]["cardIllustration"].setGeometry(QRect(240 + (i%3*340), 200, 120, 120))
-          # self.AnswerCards[i]["cardIllustration"].setStyleSheet(f"background-color: {YELLOW}")
-          # self.AnswerCards[i]["cardIllustration"].setPixmap(QPixmap("../img/push-up.png"))
           self.AnswerCards[i]["cardTitle"] = QLabel(self)
           self.AnswerCards[i]["cardTitle"].setGeometry(QRect(670, 235 + (i%3*100), 260, 30))
           self.AnswerCards[i]["cardTitle"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: {YELLOW}")
           self.AnswerCards[i]["cardTitle"].setText("Title")
           self.AnswerCards[i]["cardTitle"].setFont(inter16bold)
-          # self.AnswerCards[i]["cardDescription"] = QLabel(self)
-          # self.AnswerCards[i]["cardDescription"].setText("Description")
-          # self.AnswerCards[i]["cardDescription"].setGeometry(QRect(172 + (i%3*340), 366, 256, 64))
-          # self.AnswerCards[i]["cardDescription"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: {LIGHT_YELLOW}")
-          # self.AnswerCards[i]["cardDescription"].setFont(inter10)
-          # self.AnswerCards[i]["cardSpecification"] = QLabel(self)
-          # self.AnswerCards[i]["cardSpecification"].setText("Specification")
-          # self.AnswerCards[i]["cardSpecification"].setAlignment(Qt.AlignmentFlag.AlignRight)
-          # self.AnswerCards[i]["cardSpecification"].setGeometry(QRect(350 + (i*340), 344, 80, 14))
-          # self.AnswerCards[i]["cardSpecification"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: {LIGHT_YELLOW}")
-          # self.AnswerCards[i]["cardSpecification"].setFont(inter12)
+          self.AnswerCards[i]["input"] = QTextEdit(self)
+          self.AnswerCards[i]["input"].setGeometry(QRect((1065) , 235 + (i*100), 40, 30))
+          self.AnswerCards[i]["input"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: {LIGHT_YELLOW}")
+          self.AnswerCards[i]["input"].setPlaceholderText("input")
+          self.AnswerCards[i]["input"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
-          self.AnswerCards[i]["Input"] = QTextEdit(self)
-          self.AnswerCards[i]["Input"].setGeometry(QRect((1065) , 235 + (i*100), 40, 30))
-          self.AnswerCards[i]["Input"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: {LIGHT_YELLOW}")
-          self.AnswerCards[i]["Input"].setPlaceholderText("Input")
-          # self.AnswerCards[i]["Input"].setFont(inter16bold)
-          self.AnswerCards[i]["Input"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+          self.AnswerCards[i]["save"] = QPushButton(self)
+          self.AnswerCards[i]["save"].setGeometry(QRect((1110) , 235 + (i*100), 40, 30))
+          self.AnswerCards[i]["save"].setText("save")
+          self.AnswerCards[i]["save"].setStyleSheet("color: #6E7198; background: transparent; border: 2px solid; border-color: #6E7198; border-radius: 12px;")
+          # self.AnswerCards[i]["save"].clicked.connect(lambda x, i=i: self.openTutorial(i))
+          self.AnswerCards[i]["save"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+  
+  def setUpDisplayAnswers(self):
+    listAnswers = self.answer
+    start = self.pageCourses*3
+    for i in range(3):
+        if start+i < len(listAnswers):
+            self.AnswerCards[i]["cardTitle"].setText(listAnswers[start+i]["user_id"])
+            #self.AnswerCards[i]["cardDescription"].setText(listAnswers[start+i]["description"])
+            self.AnswerCards[i]["card"].show()
+            self.AnswerCards[i]["cardTitle"].show()
+            #self.AnswerCards[i]["cardDescription"].show()
+            self.AnswerCards[i]["input"].show()
+            self.AnswerCards[i]["save"].show()
+        else:
+            self.AnswerCards[i]["card"].hide()
+            self.AnswerCards[i]["cardTitle"].hide()
+            self.AnswerCards[i]["input"].hide()
+            self.AnswerCards[i]["save"].hide()
+            #self.AnswerCards[i]["cardIllustration"].hide()
+            #self.AnswerCards[i]["cardDescription"].hide()
+            #self.AnswerCards[i]["editCourseButton"].hide()
 
-          self.AnswerCards[i]["Save"] = QPushButton(self)
-          self.AnswerCards[i]["Save"].setGeometry(QRect((1110) , 235 + (i*100), 40, 30))
-          self.AnswerCards[i]["Save"].setText("Save")
-          self.AnswerCards[i]["Save"].setStyleSheet("color: #6E7198; background: transparent; border: 2px solid; border-color: #6E7198; border-radius: 12px;")
-          # self.AnswerCards[i]["Save"].clicked.connect(lambda x, i=i: self.openTutorial(i))
-          self.AnswerCards[i]["Save"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+    if self.pageCourses == 0:
+        self.leftCoursesButton.hide()
+    else:
+        self.leftCoursesButton.show()
 
-  def setUpDisplayWorkout(self):
-      listWorkout = self.workout
-      start = self.pageWorkout*3
-      for i in range(3):
-          if start+i < len(listWorkout):
-              self.AnswerCards[i]["cardTitle"].setText(listWorkout[start+i]["name"])
-              if (listWorkout[start+i]["linkIllustration"][:4] == "http"):
-                  pixmap = QPixmap()
-                  request = requests.get(listWorkout[start+i]["linkIllustration"])
-                  pixmap.loadFromData(request.content)
-                  self.AnswerCards[i]["cardIllustration"].setPixmap(pixmap.scaledToHeight(120))
-              else:
-                self.AnswerCards[i]["cardIllustration"].setPixmap(QPixmap(listWorkout[start+i]["linkIllustration"]))
-                self.AnswerCards[i]["cardDescription"].setText(listWorkout[start+i]["description"])
-                self.AnswerCards[i]["cardSpecification"].setText(listWorkout[start+i]["specification"])
-                self.AnswerCards[i]["card"].show()
-                self.AnswerCards[i]["cardIllustration"].show()
-                self.AnswerCards[i]["cardTitle"].show()
-                self.AnswerCards[i]["cardDescription"].show()
-                self.AnswerCards[i]["cardSpecification"].show()
-                self.AnswerCards[i]["Save"].show()
-          else:
-              self.AnswerCards[i]["card"].hide()
-              self.AnswerCards[i]["cardIllustration"].hide()
-              self.AnswerCards[i]["cardTitle"].hide()
-              self.AnswerCards[i]["cardDescription"].hide()
-              self.AnswerCards[i]["cardSpecification"].hide()
-              self.AnswerCards[i]["Save"].hide()
+    if start + 3 < len(listAnswers):
+        self.rightCoursesButton.show()
+    else:
+        self.rightCoursesButton.hide()
 
-      if self.pageWorkout == 0:
-          self.leftWorkoutButton.hide()
-      else:
-          self.leftWorkoutButton.show()
+  def fetchFinalProjectAnswer(self):
+    c = self.connFinalProjectAnswer.cursor()
+    c.execute("SELECT * FROM final_project_answer")
+    answers = c.fetchall()
+    c.close()
 
-      if start + 3 < len(listWorkout):
-          self.rightWorkoutButton.show()
-      else:
-          self.rightWorkoutButton.hide()
+    dataAnswer = []
+    for final_project_answer in answers:
+        dataAnswer.append({
+            "course_id": final_project_answer[0],
+            "final_project_id": final_project_answer[1],
+            "user_id": final_project_answer[2],
+            "answer": final_project_answer[3],
+            "score": final_project_answer[4]
+        })
+    self.answer = dataAnswer
 
+  # def editAnswer(self, i):
+  #   answer = {
+  #       "course_id": self.answer[i]["course_id"],
+  #       "final_project_id": self.answer[i]["final_project_id"],
+  #       "user_id": self.answer[i]["user_id"],
+  #       "answer": self.answer[i]["answer"],
+  #       "score": self.answer[i]["score"]
+  #   }
+  #   self.switch.emit("instructor_dashboard", self.instructor, course)
+  
   def updateCourse(self, course):
     self.course = course
     self.title.setText(self.course["name"])
