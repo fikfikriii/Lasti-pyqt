@@ -69,6 +69,7 @@ class InstructorDashboard(QWidget):
       "answer": "Ini adalah soal final project",
       "score": 80
     }
+    self.fetchFinalProject()
     self.fetchAnswer()
     self.setUpDashboardWindow()
 
@@ -146,7 +147,7 @@ class InstructorDashboard(QWidget):
     heading2.move(60, 100)
     heading2.setStyleSheet(f"color: {heading2_color}; background-color: {bg_color}")
     heading2.setFont(inter24)
-    # Set up log out button
+    # Set up back button
     backBtn = QPushButton(self)
     backBtn.setText("Back")
     backBtn.setStyleSheet(f'''
@@ -165,6 +166,26 @@ class InstructorDashboard(QWidget):
     backBtn.move(60, 615)
     backBtn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
     backBtn.clicked.connect(self.back)
+    
+    # Set up save button
+    saveBtn = QPushButton(self)
+    saveBtn.setText("Save")
+    saveBtn.setStyleSheet(f'''
+      QPushButton {{
+        color: #ffffff;
+        background-color: {btn_color};
+        border: none;
+        border-radius: 12px;
+      }}
+      QPushButton:hover {{
+        background-color: {btn_color_hover};
+      }}
+    ''')
+    saveBtn.setFixedSize(121, 48)
+    saveBtn.setFont(inter16)
+    saveBtn.move(195, 615)
+    saveBtn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+    saveBtn.clicked.connect(self.addFinalProject)
     
     #input title
     title = QLabel(self)
@@ -204,18 +225,7 @@ class InstructorDashboard(QWidget):
     specification.move(60,230)
     specification.setStyleSheet(f"color: {white}; background-color: {bg_color}")
     specification.setFont(inter18)
-    # self.specification = QLineEdit(self)
-    # self.specification.setPlaceholderText("Describe your course here!")
-    # self.specification.setFixedSize(540, 45)
-    # self.specification.move(60, 260)
-    # self.specification.setStyleSheet('''
-    #   padding: 11px 30px 11px 30px;
-    #   border: 1px solid rgba(255, 255, 255, 0.8);
-    #   border-radius: 20px;
-    #   color: rgba(255, 255, 255, 0.8);
-    #   background-color: #3E405B
-    # ''')
-    # self.specification.setFont(inter16)
+
     self.specification = QLabel(self)
     self.specification.setText("In this course you will learn how to code with pyqt6!")
     self.specification.setFixedSize(540, 45)
@@ -228,31 +238,15 @@ class InstructorDashboard(QWidget):
       background-color: #3E405B
     ''')
     self.specification.setFont(inter16)
-
-    # Tutorial = QLabel(self)
-    # Tutorial.setText("Tutorial Link")
-    # Tutorial.move(60,450)
-    # Tutorial.setStyleSheet(f"color: {white}; background-color: {bg_color}")
-    # Tutorial.setFont(inter18)
-    # self.Tutorial = QLineEdit(self)
-    # self.Tutorial.setPlaceholderText("Example: https://bit.ly/someLinkHere")
-    # self.Tutorial.setFixedSize(465, 45)
-    # self.Tutorial.move(60, 480)
-    # self.Tutorial.setStyleSheet('''
-    #   padding: 11px 30px 11px 30px;
-    #   border: 1px solid rgba(255, 255, 255, 0.8);
-    #   border-radius: 20px;
-    #   color: rgba(255, 255, 255, 0.8);
-    #   background-color: #3E405B
-    # ''')
-    # self.Tutorial.setFont(inter16)
-
+    
+    finalproject = self.final_project
     desc = QLabel(self)
     desc.setText("Final Exam (Case)")
     desc.move(60,330)
     desc.setStyleSheet(f"color: {white}; background-color: {bg_color}")
     desc.setFont(inter18)
     self.desc = QTextEdit(self)
+    self.desc.setPlaceholderText(str(finalproject["question"]))
     self.desc.setFixedSize(540, 200)
     self.desc.move(60, 360)
     self.desc.setStyleSheet('''
@@ -264,40 +258,6 @@ class InstructorDashboard(QWidget):
     ''')
     self.desc.setFont(inter16)
 
-    # answer = QLabel(self)
-    # answer.setText("Final Exam (Case)")
-    # answer.move(660,330)
-    # answer.setStyleSheet(f"color: {white}; background-color: {bg_color}")
-    # answer.setFont(inter18)
-    # self.answer = QTextEdit(self)
-    # self.answer.setFixedSize(540, 200)
-    # self.answer.move(60, 360)
-    # self.answer.setStyleSheet('''
-    #   padding: 11px 30px 11px 30px;
-    #   border: 1px solid rgba(255, 255, 255, 0.8);
-    #   border-radius: 20px;
-    #   color: rgba(255, 255, 255, 0.8);
-    #   background-color: #3E405B
-    # ''')
-    # self.desc.setFont(inter16)
-
-    # illustration = QLabel(self)
-    # illustration.setText("Illustration Link")
-    # illustration.move(660,450)
-    # illustration.setStyleSheet(f"color: {white}; background-color: {bg_color}")
-    # illustration.setFont(inter18)
-    # self.illustration = QLineEdit(self)
-    # self.illustration.setPlaceholderText("Example: https://bit.ly/someLinkHere")
-    # self.illustration.setFixedSize(465, 45)
-    # self.illustration.move(660, 480)
-    # self.illustration.setStyleSheet('''
-    #   padding: 11px 30px 11px 30px;
-    #   border: 1px solid rgba(255, 255, 255, 0.8);
-    #   border-radius: 20px;
-    #   color: rgba(255, 255, 255, 0.8);
-    #   background-color: #3E405B
-    # ''')
-    # self.illustration.setFont(inter16)
     self.initializeAnswerCards()
     self.setUpDisplayAnswer()
 
@@ -406,7 +366,6 @@ class InstructorDashboard(QWidget):
           
   
   def addAnswer(self, i):
-    print(i)
     score = self.AnswerCards[i-1]["input"].toPlainText()
     c = self.connFinalProjectAnswer.cursor()
     queryAnswer = (f"UPDATE final_project_answer set score = '{score}' WHERE user_id = '{i}'")
@@ -426,6 +385,15 @@ class InstructorDashboard(QWidget):
           "score": answer[4]
         })
     self.answer = dataAnswer
+
+  def addFinalProject(self):
+    question = self.desc.toPlainText()
+    c = self.connFinalProject.cursor()
+    queryAnswer = (f"UPDATE final_project set question = '{question}' WHERE final_project_id = 1")
+    c.execute(queryAnswer)
+    self.connFinalProject.commit()
+    c.close()
+    
 
   def setUpDisplayAnswer(self):
       listAnswer = self.answer
