@@ -402,10 +402,10 @@ class InstructorDashboard(QWidget):
           self.AnswerCards[i]["save"].setStyleSheet("color: #6E7198; background: transparent; border: 2px solid; border-color: #6E7198; border-radius: 12px;")
           # self.AnswerCards[i]["save"].clicked.connect(lambda x, i=i: self.openTutorial(i))
           self.AnswerCards[i]["save"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-          self.AnswerCards[i]["save"].clicked.connect(self.addAnswer)
+          self.AnswerCards[i]["save"].clicked.connect(lambda x, i=i: self.addAnswer(i))
           
   
-  def addAnswer(self):
+  def addAnswer(self, i):
     score = self.AnswerCards[i]["input"].toPlainText()
     c = self.connFinalProjectAnswer.cursor()
     queryAnswer = ("""
