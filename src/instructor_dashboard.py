@@ -402,16 +402,15 @@ class InstructorDashboard(QWidget):
           self.AnswerCards[i]["save"].setStyleSheet("color: #6E7198; background: transparent; border: 2px solid; border-color: #6E7198; border-radius: 12px;")
           # self.AnswerCards[i]["save"].clicked.connect(lambda x, i=i: self.openTutorial(i))
           self.AnswerCards[i]["save"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-          self.AnswerCards[i]["save"].clicked.connect(lambda x, i=i: self.addAnswer(i))
+          self.AnswerCards[i]["save"].clicked.connect(lambda x, i=i: self.addAnswer(i+1))
           
   
   def addAnswer(self, i):
-    score = self.AnswerCards[i]["input"].toPlainText()
+    print(i)
+    score = self.AnswerCards[i-1]["input"].toPlainText()
     c = self.connFinalProjectAnswer.cursor()
-    queryAnswer = ("""
-      UPDATE final_project_answer set score = ? WHERE user_id = ? """)
-    data = (str(score), (str(i)))
-    c.execute(queryAnswer,data)
+    queryAnswer = (f"UPDATE final_project_answer set score = '{score}' WHERE user_id = '{i}'")
+    c.execute(queryAnswer)
 
     self.connFinalProjectAnswer.commit()
     answers = c.fetchall()
