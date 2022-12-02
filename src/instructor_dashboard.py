@@ -198,7 +198,7 @@ class InstructorDashboard(QWidget):
     # ''')
     # self.title.setFont(inter16)
 
-    # Input spec
+    # input spec
     specification = QLabel(self)
     specification.setText("Description")
     specification.move(60,230)
@@ -376,11 +376,6 @@ class InstructorDashboard(QWidget):
           self.AnswerCards[i]["card"] = QLabel(self)
           self.AnswerCards[i]["card"].setGeometry(QRect(660, 220 + (i * 100), 500, 60))
           self.AnswerCards[i]["card"].setStyleSheet(f"background-color: {YELLOW}")
-          # self.AnswerCards[i]["card"].setPixmap(QPixmap("../img/template-YELLOW-card.png"))
-          # self.AnswerCards[i]["cardIllustration"] = QLabel(self)
-          # self.AnswerCards[i]["cardIllustration"].setGeometry(QRect(240 + (i%3*340), 200, 120, 120))
-          # self.AnswerCards[i]["cardIllustration"].setStyleSheet(f"background-color: {YELLOW}")
-          # self.AnswerCards[i]["cardIllustration"].setPixmap(QPixmap("../img/push-up.png"))
           self.AnswerCards[i]["cardTitle"] = QLabel(self)
           self.AnswerCards[i]["cardTitle"].setGeometry(QRect(670, 227 + (i%3*100), 260, 10))
           self.AnswerCards[i]["cardTitle"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: rgba(254, 193, 102, 0)")
@@ -392,42 +387,57 @@ class InstructorDashboard(QWidget):
           self.AnswerCards[i]["cardAnswer"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: rgba(254, 193, 102, 0)")
           self.AnswerCards[i]["cardAnswer"].setText("Answer")
           self.AnswerCards[i]["cardAnswer"].setFont(inter12)
+
+          self.AnswerCards[i]["input"] = QTextEdit(self)
+          self.AnswerCards[i]["input"].setGeometry(QRect((1065) , 235 + (i*100), 40, 30))
+          self.AnswerCards[i]["input"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: {LIGHT_YELLOW}")
+          self.AnswerCards[i]["input"].setPlaceholderText("Input")
+          # self.AnswerCards[i]["input"].setFont(inter16bold)
+          self.AnswerCards[i]["input"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
           
-          # self.AnswerCards[i]["cardDescription"] = QLabel(self)
-          # self.AnswerCards[i]["cardDescription"].setText("Description")
-          # self.AnswerCards[i]["cardDescription"].setGeometry(QRect(172 + (i%3*340), 366, 256, 64))
-          # self.AnswerCards[i]["cardDescription"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: {LIGHT_YELLOW}")
-          # self.AnswerCards[i]["cardDescription"].setFont(inter10)
-          # self.AnswerCards[i]["cardSpecification"] = QLabel(self)
-          # self.AnswerCards[i]["cardSpecification"].setText("Specification")
-          # self.AnswerCards[i]["cardSpecification"].setAlignment(Qt.AlignmentFlag.AlignRight)
-          # self.AnswerCards[i]["cardSpecification"].setGeometry(QRect(350 + (i*340), 344, 80, 14))
-          # self.AnswerCards[i]["cardSpecification"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: {LIGHT_YELLOW}")
-          # self.AnswerCards[i]["cardSpecification"].setFont(inter12)
 
-          self.AnswerCards[i]["Input"] = QTextEdit(self)
-          self.AnswerCards[i]["Input"].setGeometry(QRect((1065) , 235 + (i*100), 40, 30))
-          self.AnswerCards[i]["Input"].setStyleSheet(f"color: {PRIMARY_BLACK}; background-color: {LIGHT_YELLOW}")
-          self.AnswerCards[i]["Input"].setPlaceholderText("Input")
-          # self.AnswerCards[i]["Input"].setFont(inter16bold)
-          self.AnswerCards[i]["Input"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+          self.AnswerCards[i]["save"] = QPushButton(self)
+          self.AnswerCards[i]["save"].setGeometry(QRect((1110) , 235 + (i*100), 40, 30))
+          self.AnswerCards[i]["save"].setText("Save")
+          self.AnswerCards[i]["save"].setStyleSheet("color: #6E7198; background: transparent; border: 2px solid; border-color: #6E7198; border-radius: 12px;")
+          # self.AnswerCards[i]["save"].clicked.connect(lambda x, i=i: self.openTutorial(i))
+          self.AnswerCards[i]["save"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+          self.AnswerCards[i]["save"].clicked.connect(self.addAnswer)
+          
+  
+  def addAnswer(self):
+    score = self.AnswerCards[i]["input"].toPlainText()
+    c = self.connFinalProjectAnswer.cursor()
+    queryAnswer = ("""
+      UPDATE final_project_answer set score = ? WHERE user_id = ? """)
+    data = (str(score), (str(i)))
+    c.execute(queryAnswer,data)
 
-          self.AnswerCards[i]["Save"] = QPushButton(self)
-          self.AnswerCards[i]["Save"].setGeometry(QRect((1110) , 235 + (i*100), 40, 30))
-          self.AnswerCards[i]["Save"].setText("Save")
-          self.AnswerCards[i]["Save"].setStyleSheet("color: #6E7198; background: transparent; border: 2px solid; border-color: #6E7198; border-radius: 12px;")
-          # self.AnswerCards[i]["Save"].clicked.connect(lambda x, i=i: self.openTutorial(i))
-          self.AnswerCards[i]["Save"].setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+    self.connFinalProjectAnswer.commit()
+    answers = c.fetchall()
+    c.close()
+
+    dataAnswer = []
+    for answer in answers:
+        dataAnswer.append({
+          "course_id": answer[0],
+          "final_project_id": answer[1],
+          "user_id": answer[2],
+          "answer": answer[3],
+          "score": answer[4]
+        })
+    self.answer = dataAnswer
 
   def setUpDisplayAnswer(self):
       listAnswer = self.answer
-      # start = self.pageWorkout*3
       for i in range(3):
           if i < len(listAnswer):
               self.AnswerCards[i]["cardTitle"].setText("User ID: " + str(listAnswer[i]["user_id"]))
               self.AnswerCards[i]["cardAnswer"].setText(listAnswer[i]["answer"])
+              self.AnswerCards[i]["input"].setPlaceholderText(str(listAnswer[i]["score"]))
               self.AnswerCards[i]["cardTitle"].show()
               self.AnswerCards[i]["cardAnswer"].show()
+              self.AnswerCards[i]["input"].show()
           else:
               self.AnswerCards[i]["cardTitle"].hide()
               self.AnswerCards[i]["cardAnswer"].hide()
