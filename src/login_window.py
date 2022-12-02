@@ -184,6 +184,10 @@ class LoginWindow(QWidget):
         cuser.execute(
             f"SELECT * FROM user WHERE (username = '{self.usernameEdit.text()}' OR email = '{self.usernameEdit.text()}')")
         resuser = cuser.fetchone()
+        cinstructor = self.connectInstructor.cursor()
+        cinstructor.execute(
+            f"SELECT * FROM instructor WHERE (username = '{self.usernameEdit.text()}' OR email = '{self.usernameEdit.text()}')")
+        resinstructor = cinstructor.fetchone()
         if resuser:
             if resuser != None and not self.comparePass(self.passwordEdit.text(), resuser[4]):
                 resuser = None
@@ -213,11 +217,7 @@ class LoginWindow(QWidget):
                     "enrolled_course": resuser[5]
                 }
                 self.switch.emit("user_course", user)
-        else:    
-            cinstructor = self.connectInstructor.cursor()
-            cinstructor.execute(
-                f"SELECT * FROM instructor WHERE (username = '{self.usernameEdit.text()}' OR email = '{self.usernameEdit.text()}')")
-            resinstructor = cinstructor.fetchone()
+        elif resinstructor:    
             if resinstructor != None and not self.comparePass(self.passwordEdit.text(), resinstructor[4]):
                 resinstructor = None
                 if resinstructor == None:
@@ -245,6 +245,15 @@ class LoginWindow(QWidget):
                     "password": resinstructor[4],
                 }
                 self.switch.emit("instructor_course", instructor)
+        else:
+            msgBox = QMessageBox()
+            msgBox.setText(
+                "<p>Username/email and password combination not found!</p>")
+            msgBox.setWindowTitle("Login Failed")
+            msgBox.setIcon(QMessageBox.Icon.Warning)
+            msgBox.setStyleSheet("background-color: white")
+            msgBox.setStandardButtons(QMessageBox.StandardButton.Ok)
+            msgBox.exec()
 
     def clearForm(self):
         self.passwordEdit.clear()

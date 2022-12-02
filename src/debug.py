@@ -3,14 +3,8 @@ import sqlite3
 
 import bcrypt
 
-# conn = sqlite3.connect("fitpal.db")
-# c = conn.cursor()
-# c.execute("SELECT * FROM workout_history")
-# print(c.fetchall())
 arr = []
 def emailValidation(email):
-      #example@gmail.com
-      #13520029@std.stei.itb.ac.id
       validEmail = r"[A-Za-z0-9._]+@[A-Za-z0-9.]+\.[A-Z|a-z]{2,}"
       if re.match(validEmail, email):
           print("MASUK BOS")
