@@ -1,88 +1,20 @@
-# FitPal
+# Implementasi Frontend dari Smartclassroom Udemy - Kelompok 2 - Kelas 1
 
-FitPal merupakan sebuah aplikasi desktop yang dapat membantu pengguna untuk menyusun program olahraga secara pribadi. Aplikasi FitPal dibuat dan dikembangkan dengan bahasa Pemrograman Python.
-
-## Fitur
-
-Aplikasi FitPal memiliki beberapa fitur, yaitu:
-
-- Autentikasi (Login dan Register)
-- Dashboard untuk user dan trainer
-- Display workout untuk user dan trainer
-- Display workout plan untuk user
-- History workout untuk user
-- Finish workout untuk user
-- Add workout untuk trainer
-
-## _Dependencies_
-
-- Python3
-- _library_:
-  - PyQt6
-  - db-sqlite3
-  - requests
-  - bcrypt
-  - pytest
+Pada implementasi prototype Frontend, kami menggunakan bahasa pemrograman Python dengan framework PyQt6. Terdapat beberapa window yang kami implementasikan untuk prototype inovasi kami. Untuk melihat window yang diimplementasikan dapat dilihat pada folder docs. Kemudian untuk menjalankan prototype frontend ini dapat mengikuti langkah di bawah ini.
 
 ## Cara Menjalankan Aplikasi
 
-### Untuk Windows
+- Buat virtual environment python terlebih dahulu dengan command ```python -m venv {nama venv}```
+- Jalankan virtual environment dengan command ```{nama venv}/scripts/activate``` untuk windows atau ```source {nama venv}/bin/activate``` untuk linux/mac
+- Jalankan command ```pip install -r requirements.txt``` untuk menginstall semua library yang akan dipakai untuk menjalankan program
+- Pindah ke directory src dengan command ```cd src``` di terminal
+- Jalankan program dengan memasukan command ```python controller.py``` di terminal
+- Dengan begitu prototype dapat dipakai
 
-Jalankan file `run.bat`
-
-### Untuk UNIX (Linux & Mac)
-
-Jalankan command `make run` pada terminal
-
-## Daftar Modul yang Diimplementasikan
-
-| Nama Modul      | NIM Penanggung Jawab | Nama Penanggung Jawab           |
-| --------------- | -------------------- | ------------------------------- |
-| Autentikasi     | 13520119             | Marchotridyo                    |
-| Dashboard       | 13520119             | Marchotridyo                    |
-| Display Workout | 13520117             | Hafidz Nur Rahman Ghozali       |
-| Add Workout     | 13520101             | Aira Thalca Avila Putra         |
-| Finish Workout  | 13520029             | Muhammad Garebhaldhie Er Rahman |
-
-### Autentikasi
-
-#### Login
-
-![LoginPage.png](./doc/login.png)
-
-#### Register
-
-![RegisterPage.png](./doc/register.png)
-
-### Dashboard
-
-#### Dashboard user
-
-![DashboardUser.png](./doc/dashboard-user.png)
-
-#### Dashboard Trainer
-
-![DashboardTrainer.png](./doc/dashboard-trainer.png)
-
-### Display Workout
-
-![DisplayWorkoutUser.png](./doc/display-workout-user.png)
-![DisplayWorkoutPlan.png](./doc/display-workout-plan-user.png)
-
-### Add Workout (Trainer)
-
-![DisplayWorkoutTrainer.png](./doc/display-workout-trainer.png)
-![AddWorkoutTrainer.png](./doc/add-workout-trainer.png)
-
-### Finish Workout (User)
-
-![HistoryWorkout.png](./doc/history-user.png)
-![AddWorkoutUser.png](./doc/add-workout-user.png)
-
-## Daftar Tabel Basis data yang Diimplementasikan
-
-- user(**id**, fullname, username, email, password, type)
-- list_olahraga(**olahraga_id**, name, description, specification, linkIllustration, linkTutorial, forUser)
-- daftar_request(**request_id**, user_id, trainer_id, umur, jenis_kelamin, berat_badan, tinggi_badan, tujuan, status, title, description)
-- workout(**request_id**, **olahraga_id**, status)
-- workout_history(**history_id**, user_id, olahraga_id, name, specification, date)
+## Anggota Kelompok 2 K1 Layanan Sistem dan Teknologi Informasi
+Made Adhika Wiwardhana - 18220003
+I Dewa Gde Widhy Suryana	- 18220035
+Vincentius Verel Siedharta	- 18220061
+Muhammad Zaky - 18220071
+Umar Hakim - 18220073
+Muhamad Fikri Nurohman - 18220097

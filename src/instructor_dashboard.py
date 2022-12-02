@@ -122,7 +122,7 @@ class InstructorDashboard(QWidget):
     # Set up background image
     self.setStyleSheet(f"background-color: {bg_color}")
     # Set up logo
-    # logoPixmap = QPixmap("../img/dashboard-fitpal-logo.png")
+    # logoPixmap = QPixmap("../img/logo.png")
     # logo = QLabel(self)
     # logo.setPixmap(logoPixmap)
     # logo.move(60, 30)
